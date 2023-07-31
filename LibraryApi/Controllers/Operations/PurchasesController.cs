@@ -1,10 +1,10 @@
 ﻿using LibraryApp.DataAccess;
+using LibraryApp.DataAccess.Repository.IRepository;
 using LibraryApp.Models.DTO;
 using LibraryApp.Models.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace LibraryApi.Controllers.Operations
 {
@@ -12,21 +12,20 @@ namespace LibraryApi.Controllers.Operations
     [ApiController]
     public class PurchasesController : ControllerBase
     {
-        private readonly LibraryContext _db;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public PurchasesController(LibraryContext db) {
-            _db = db;
+        public PurchasesController(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+
         }
         // GET: api/<PurchasesController>
         [HttpGet]
         [Route("getall")]
-        public async Task<IEnumerable<Purchases>> GetAll() {
-            var purchaseList = await _db.Purchases
-                                        .Include(x => x.Client)
-                                        .Include(x => x.Book)
-                                        .Include(x => x.Employee)
-                                        .ToListAsync();
-
+        public async Task<IEnumerable<Purchases>> GetAll()
+        {
+            var purchaseList = await _unitOfWork.Purchases
+                                                .GetAllAsync(new[] { "Book", "Client", "Employee" });
 
             return purchaseList;
         }
@@ -35,8 +34,9 @@ namespace LibraryApi.Controllers.Operations
         [HttpGet("{clientId}_{bookId}")]
         [ProducesResponseType(typeof(Purchases), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Get(int clientId, int bookId) {
-            var purchase = await _db.Purchases.FirstOrDefaultAsync(x => x.BookId == bookId && x.ClientId == clientId);
+        public async Task<IActionResult> Get(int clientId, int bookId)
+        {
+            var purchase = await _unitOfWork.Purchases.GetFirstOrDefaultAsync(x => x.BookId == bookId && x.ClientId == clientId);
             if (purchase == null)
                 return NotFound();
 
@@ -46,23 +46,14 @@ namespace LibraryApi.Controllers.Operations
         // POST api/<PurchasesController>
         [HttpPost]
         [Route("create")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<IActionResult> Create(PurchasesDto p) {
+        [ProducesResponseType(typeof(Purchases), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Create(PurchasesDto p)
+        {
+            var purchase = _unitOfWork.Purchases.CreatePurchase(p);
+            await _unitOfWork.Purchases.AddAsync(purchase);
+            await _unitOfWork.SaveAsync();
 
-            var purchase = new Purchases
-            {
-                ClientId = p.ClientId,
-                BookId = p.BookId,
-                EmployeeId = p.EmployeeId,
-                Quantity = p.Quantity,
-            };
-            int price = purchase.Book.AuthPrice;
-            purchase.BuyPrice = price + (price * 20 / 100);
-
-            await _db.Purchases.AddAsync(purchase);
-            await _db.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(Get), new { clientId = purchase.ClientId, bookId = purchase.BookId }, purchase);
+            return Ok(p);
         }
 
         // PUT api/<PurchasesController>/5
@@ -70,16 +61,16 @@ namespace LibraryApi.Controllers.Operations
         [Route("{clientId}_{bookId}/update")]
         [ProducesResponseType(typeof(Purchases), StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update(int clientId, int bookId) {
-            var purchase = await _db.Purchases.FirstOrDefaultAsync(x => x.BookId == bookId && x.ClientId == clientId);
+        public async Task<IActionResult> Update(int clientId, int bookId, Purchases purchase)
+        {
 
-            if (purchase == null)
-                return BadRequest();
-
-            _db.Purchases.Update(purchase);
-            await _db.SaveChangesAsync();
-
-            return NoContent();
+            if (purchase.ClientId == clientId && purchase.BookId == bookId)
+            {
+                _unitOfWork.Purchases.Update(purchase);
+                await _unitOfWork.SaveAsync();
+                return NoContent();
+            }
+            return BadRequest();
         }
 
         // DELETE api/<PurchasesController>/5
@@ -87,14 +78,15 @@ namespace LibraryApi.Controllers.Operations
         [Route("{clientId}_{bookId}/delete")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Delete(int clientId, int bookId) {
-            var purchaseToDelete = await _db.Purchases.FirstOrDefaultAsync(x => x.BookId == bookId && x.ClientId == clientId);
+        public async Task<IActionResult> Delete(int clientId, int bookId)
+        {
+            var purchaseToDelete = await _unitOfWork.Purchases.GetFirstOrDefaultAsync(x => x.BookId == bookId && x.ClientId == clientId);
 
             if (purchaseToDelete == null)
                 return NotFound();
 
-            _db.Purchases.Remove(purchaseToDelete);
-            await _db.SaveChangesAsync();
+            _unitOfWork.Purchases.Remove(purchaseToDelete);
+            await _unitOfWork.SaveAsync();
 
             return NoContent();
         }

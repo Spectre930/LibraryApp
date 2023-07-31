@@ -1,4 +1,7 @@
 ﻿using LibraryApp.DataAccess;
+using LibraryApp.DataAccess.Repository;
+using LibraryApp.DataAccess.Repository.IRepository;
+using LibraryApp.Models.DTO;
 using LibraryApp.Models.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,82 +13,86 @@ namespace LibraryApi.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 public class BookAuthorController : ControllerBase
-    {
-    private readonly LibraryContext _db;
+{
+    private readonly IUnitOfWork _unitOfWork;
 
-    public BookAuthorController(LibraryContext db)
-        {
-        _db = db;
-        }
+
+
+    public BookAuthorController(IUnitOfWork unitOfWork)
+    {
+        _unitOfWork = unitOfWork;
+    }
 
 
     [HttpGet]
     [Route("getall")]
     public async Task<IEnumerable<AuthorBook>> GetAll()
-        {
-        return await _db.AuthorBooks.ToListAsync();
-        }
+    {
+        return await _unitOfWork.AuthorBook.GetAllAsync();
+    }
 
     [HttpGet("{bookId}_{authorId}")]
     [ProducesResponseType(typeof(Authors), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Get(int BookId, int AuthorId)
-        {
-        var bookAuthor = await _db.AuthorBooks.FindAsync(BookId, AuthorId);
+    {
+        var bookAuthor = await _unitOfWork.AuthorBook.GetFirstOrDefaultAsync(x => x.BookId == BookId && x.AuthorId == AuthorId);
+
         if (bookAuthor == null)
             return NotFound();
 
         return Ok(bookAuthor);
-        }
+    }
 
     [HttpPost]
     [Route("create")]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    public async Task<IActionResult> Create(AuthorBook ba)
+    [ProducesResponseType(typeof(AuthorBook), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Create(AuthorBookDto ba)
+    {
+        var bookAuthor = new AuthorBook
         {
-        ba.Author = await _db.Authors.FindAsync(ba.AuthorId);
-        ba.Book = await _db.Books.FindAsync(ba.BookId);
-        await _db.AuthorBooks.AddAsync(ba);
-        await _db.SaveChangesAsync();
+            AuthorId = ba.AuthId,
+            BookId = ba.BookId,
+        };
+        await _unitOfWork.AuthorBook.AddAsync(bookAuthor);
+        await _unitOfWork.SaveAsync();
 
-        return CreatedAtAction(nameof(Get), new { bookId = ba.BookId, authorId = ba.AuthorId }, ba);
-        }
-
+        return Ok(bookAuthor);
+    }
     [HttpPut]
-    [Route("{bookId}_{authorId}/update")]
+    [Route("update/{bookId}_{authorId}")]
     [ProducesResponseType(typeof(AuthorBook), StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Update(int bookId, int authorId)
-        {
-        var ba = await _db.AuthorBooks.Include(x => x.Author).Include(x => x.Book)
-            .FirstOrDefaultAsync(x => x.BookId == bookId && x.AuthorId == authorId);
+    public async Task<IActionResult> Update(int bookId, int authorId, AuthorBook ba)
+    {
 
-        if (ba == null)
+
+        if (ba.AuthorId != authorId || ba.BookId != bookId)
             return BadRequest();
 
-        _db.Update(ba);
-        await _db.SaveChangesAsync();
+        _unitOfWork.AuthorBook.Update(ba);
+        await _unitOfWork.SaveAsync();
 
         return NoContent();
-        }
+    }
 
     [HttpDelete]
     [Route("{bookId}_{authorId}/delete")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int bookId, int authorId)
-        {
-        var baToDelete = await _db.Authors.FindAsync(bookId, authorId);
+    {
+        var baToDelete = await _unitOfWork.AuthorBook.GetFirstOrDefaultAsync(x => x.BookId == bookId && x.AuthorId == authorId);
 
         if (baToDelete == null)
             return NotFound();
 
-        _db.Authors.Remove(baToDelete);
-        await _db.SaveChangesAsync();
+        _unitOfWork.AuthorBook.Remove(baToDelete);
+        await _unitOfWork.SaveAsync();
 
         return NoContent();
-        }
-
     }
+
+}
 
 

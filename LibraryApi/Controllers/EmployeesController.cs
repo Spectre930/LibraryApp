@@ -1,4 +1,5 @@
 ﻿using LibraryApp.DataAccess;
+using LibraryApp.DataAccess.Repository.IRepository;
 using LibraryApp.Models.DTO;
 using LibraryApp.Models.Models;
 using Microsoft.AspNetCore.Http;
@@ -11,41 +12,42 @@ namespace LibraryApi.Controllers
     [ApiController]
     public class EmployeesController : ControllerBase
     {
-        private readonly LibraryContext _db;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public EmployeesController(LibraryContext db) {
-            _db = db;
+        public EmployeesController(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet]
         [Route("getall")]
-        public async Task<IEnumerable<Employees>> GetAll() {
-            var empList = await _db.Employees
-                                   .Include(x => x.Role)
-                                   .ToListAsync();
+        public async Task<IEnumerable<Employees>> GetAll()
+        {
 
-            return empList;
+            return await _unitOfWork.Employees
+                                    .GetAllAsync(new[] { "Role" });
+
         }
 
         [HttpGet]
         [Route("{id}")]
         [ProducesResponseType(typeof(Employees), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Get(int id) {
-            var emp = await _db.Employees
-                               .Include(x => x.Role.Role)
-                               .FirstOrDefaultAsync(x => x.Id == id);
+        public async Task<IActionResult> Get(int id)
+        {
+            var emp = await _unitOfWork.Employees
+                                       .GetFirstOrDefaultAsync(x => x.Id == id, new[] { "Role" });
             if (emp == null)
                 return NotFound();
-
 
             return Ok(emp);
         }
 
         [HttpPost]
         [Route("create")]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Create(EmployeesDto emp) {
+        [ProducesResponseType(typeof(Employees), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Create(EmployeesDto emp)
+        {
 
             var employee = new Employees
             {
@@ -59,8 +61,8 @@ namespace LibraryApi.Controllers
                 RoleId = emp.RoleId
             };
 
-            await _db.Employees.AddAsync(employee);
-            await _db.SaveChangesAsync();
+            await _unitOfWork.Employees.AddAsync(employee);
+            await _unitOfWork.SaveAsync();
 
             return Ok("Created");
         }
@@ -69,13 +71,13 @@ namespace LibraryApi.Controllers
         [Route("{id}/update")]
         [ProducesResponseType(typeof(Employees), StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update(int id) {
-            var employee = await _db.Employees.Include(x => x.Role).FirstOrDefaultAsync(x => x.Id == id);
-            if (employee == null)
+        public async Task<IActionResult> Update(int id, Employees employee)
+        {
+            if (employee.Id != id)
                 return BadRequest();
 
-            _db.Employees.Update(employee);
-            await _db.SaveChangesAsync();
+            _unitOfWork.Employees.Update(employee);
+            await _unitOfWork.SaveAsync();
 
             return NoContent();
         }
@@ -84,14 +86,15 @@ namespace LibraryApi.Controllers
         [Route("{id}/delete")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Delete(int id) {
-            var EmployeeToDelete = await _db.Employees.FindAsync(id);
-
+        public async Task<IActionResult> Delete(int id)
+        {
+            var EmployeeToDelete = await _unitOfWork.Employees
+                                       .GetFirstOrDefaultAsync(x => x.Id == id, new[] { "Role" });
             if (EmployeeToDelete == null)
                 return NotFound();
 
-            _db.Employees.Remove(EmployeeToDelete);
-            await _db.SaveChangesAsync();
+            _unitOfWork.Employees.Remove(EmployeeToDelete);
+            await _unitOfWork.SaveAsync();
 
 
             return NoContent();

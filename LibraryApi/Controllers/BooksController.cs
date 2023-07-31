@@ -1,4 +1,5 @@
 ﻿using LibraryApp.DataAccess;
+using LibraryApp.DataAccess.Repository.IRepository;
 using LibraryApp.Models.DTO;
 using LibraryApp.Models.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -10,24 +11,27 @@ namespace LibraryApi.Controllers
     [ApiController]
     public class BooksController : ControllerBase
     {
-        private readonly LibraryContext _db;
 
-        public BooksController(LibraryContext db) {
-            _db = db;
+        private readonly IUnitOfWork _unitOfWork;
+
+        public BooksController(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet]
         [Route("getall")]
-        public async Task<IEnumerable<Books>> GetAll() {
-            var bookList = await _db.Books.Include(x => x.Genre.Name).ToListAsync();
-            return await _db.Books.ToListAsync();
+        public async Task<IEnumerable<Books>> GetAll()
+        {
+            return await _unitOfWork.Books.GetAllAsync(new[] { "Genre" });
         }
 
         [HttpGet("id")]
         [ProducesResponseType(typeof(Books), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Get(int id) {
-            var book = await _db.Books.Include(x => x.Genre).FirstOrDefaultAsync(x => x.Id == id);
+        public async Task<IActionResult> Get(int id)
+        {
+            var book = await _unitOfWork.Books.GetFirstOrDefaultAsync(x => x.Id == id, new[] { "Genre" });
 
             if (book == null)
                 return NotFound();
@@ -37,8 +41,9 @@ namespace LibraryApi.Controllers
 
         [HttpPost]
         [Route("create")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<IActionResult> Create(BooksDTO dto) {
+        [ProducesResponseType(typeof(Books), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Create(BooksDTO dto)
+        {
             var book = new Books
             {
                 Title = dto.Title,
@@ -49,23 +54,24 @@ namespace LibraryApi.Controllers
                 AuthPrice = dto.AuthPrice,
                 Author = dto.Author
             };
-            await _db.Books.AddAsync(book);
-            await _db.SaveChangesAsync();
+            await _unitOfWork.Books.AddAsync(book);
+            await _unitOfWork.SaveAsync();
 
-            return CreatedAtAction(nameof(Get), new { id = book.Id }, book);
+            return Ok(dto);
         }
 
         [HttpPut]
         [Route("{id}/update")]
         [ProducesResponseType(typeof(Books), StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update(int id) {
-            var book = await _db.Books.Include(x => x.Genre).FirstOrDefaultAsync(x => x.Id == id);
-            if (book == null)
+        public async Task<IActionResult> Update(int id, Books book)
+        {
+            //var book = await _unitOfWork.Books.Include(x => x.Genre).FirstOrDefaultAsync(x => x.Id == id);
+            if (book.Id != id)
                 return BadRequest();
 
-            _db.Update(book);
-            await _db.SaveChangesAsync();
+            _unitOfWork.Books.Update(book);
+            await _unitOfWork.SaveAsync();
 
             return NoContent();
         }
@@ -74,14 +80,15 @@ namespace LibraryApi.Controllers
         [Route("{id}/delete")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Delete(int id) {
-            var bookToDelete = await _db.Books.FindAsync(id);
+        public async Task<IActionResult> Delete(int id)
+        {
+            var bookToDelete = await _unitOfWork.Books.GetFirstOrDefaultAsync(x => x.Id == id);
 
             if (bookToDelete == null)
                 return NotFound();
 
-            _db.Books.Remove(bookToDelete);
-            await _db.SaveChangesAsync();
+            _unitOfWork.Books.Remove(bookToDelete);
+            await _unitOfWork.SaveAsync();
 
             return NoContent();
         }

@@ -1,4 +1,5 @@
 ﻿using LibraryApp.DataAccess;
+using LibraryApp.DataAccess.Repository.IRepository;
 using LibraryApp.Models.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,23 +11,26 @@ namespace LibraryApi.Controllers
     [ApiController]
     public class RolesController : ControllerBase
     {
-        private readonly LibraryContext _db;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public RolesController(LibraryContext db) {
-            _db = db;
+        public RolesController(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet]
         [Route("getall")]
-        public async Task<IEnumerable<Roles>> GetAll() {
-            return await _db.Roles.ToListAsync();
+        public async Task<IEnumerable<Roles>> GetAll()
+        {
+            return await _unitOfWork.Roles.GetAllAsync();
         }
 
         [HttpGet("id")]
         [ProducesResponseType(typeof(Roles), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Get(int id) {
-            var Role = await _db.Roles.FindAsync(id);
+        public async Task<IActionResult> Get(int id)
+        {
+            var Role = await _unitOfWork.Roles.GetFirstOrDefaultAsync(x => x.Id == id);
             if (Role == null)
                 return NotFound();
 
@@ -35,26 +39,29 @@ namespace LibraryApi.Controllers
 
         [HttpPost]
         [Route("create")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<IActionResult> Create(Roles role) {
-            await _db.Roles.AddAsync(role);
-            await _db.SaveChangesAsync();
+        [ProducesResponseType(typeof(Roles), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Create(Roles role)
+        {
+            await _unitOfWork.Roles.AddAsync(role);
+            await _unitOfWork.SaveAsync();
 
-            return CreatedAtAction(nameof(Get), new { id = role.Id }, role);
+            return Ok(role);
         }
 
         [HttpPut]
         [Route("{id}/update")]
         [ProducesResponseType(typeof(Roles), StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update(int id) {
+        public async Task<IActionResult> Update(int id)
+        {
 
-            var role = await _db.Roles.FindAsync(id);
+            var role = await _unitOfWork.Roles
+                                        .GetFirstOrDefaultAsync(x => x.Id == id);
             if (role == null)
                 return BadRequest();
 
-            _db.Roles.Update(role);
-            await _db.SaveChangesAsync();
+            _unitOfWork.Roles.Update(role);
+            await _unitOfWork.SaveAsync();
 
             return NoContent();
         }
@@ -63,14 +70,16 @@ namespace LibraryApi.Controllers
         [Route("{id}/delete")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Delete(int id) {
-            var RoleToDelete = await _db.Roles.FindAsync(id);
+        public async Task<IActionResult> Delete(int id)
+        {
+            var RoleToDelete = await _unitOfWork.Roles
+                                        .GetFirstOrDefaultAsync(x => x.Id == id);
 
             if (RoleToDelete == null)
                 return NotFound();
 
-            _db.Roles.Remove(RoleToDelete);
-            await _db.SaveChangesAsync();
+            _unitOfWork.Roles.Remove(RoleToDelete);
+            await _unitOfWork.SaveAsync();
 
             return NoContent();
         }
