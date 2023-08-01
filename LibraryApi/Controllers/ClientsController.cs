@@ -52,7 +52,7 @@ namespace LibraryApi.Controllers
                 L_Name = client.L_Name,
                 Email = client.Email,
                 DOB = client.DOB,
-                Age = client.Age,
+                Age = DateTime.Now.Year - client.DOB.Year,
                 RolesId = client.RolesId
             };
             await _unitOfWork.Clients.AddAsync(user);
@@ -71,7 +71,7 @@ namespace LibraryApi.Controllers
             if (client.Id != id)
                 return BadRequest();
 
-            _unitOfWork.Clients.Update(client);
+            await _unitOfWork.Clients.UpdateClient(client);
             await _unitOfWork.SaveAsync();
 
             return NoContent();

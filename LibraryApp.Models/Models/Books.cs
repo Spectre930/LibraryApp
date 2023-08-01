@@ -19,7 +19,6 @@ public class Books
     [Required]
     [AllowNull]
     public int GenreId { get; set; }
-    [AllowNull]
     public Genres Genre { get; set; }
 
     public int Copies { get; set; }
@@ -28,6 +27,9 @@ public class Books
 
     [Required]
     public int AuthPrice { get; set; }
+
+    [AllowNull]
+    public int ListedPrice { get; set; }
 
     public string Author { get; set; }
 }

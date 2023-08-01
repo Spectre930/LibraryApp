@@ -55,7 +55,7 @@ namespace LibraryApi.Controllers
                 L_Name = emp.L_Name,
                 Email = emp.Email,
                 DOB = emp.DOB,
-                Age = emp.Age,
+                Age = DateTime.Now.Year - emp.DOB.Year,
                 PhoneNumber = emp.PhoneNumber,
                 TotalSales = 0,
                 RoleId = emp.RoleId
@@ -76,7 +76,7 @@ namespace LibraryApi.Controllers
             if (employee.Id != id)
                 return BadRequest();
 
-            _unitOfWork.Employees.Update(employee);
+            await _unitOfWork.Employees.UpdateEmployee(employee);
             await _unitOfWork.SaveAsync();
 
             return NoContent();

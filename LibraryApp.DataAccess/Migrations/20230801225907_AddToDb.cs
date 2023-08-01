@@ -66,6 +66,7 @@ namespace LibraryApp.DataAccess.Migrations
                     Copies = table.Column<int>(type: "int", nullable: false),
                     AvailableCopies = table.Column<int>(type: "int", nullable: false),
                     AuthPrice = table.Column<int>(type: "int", nullable: false),
+                    ListedPrice = table.Column<int>(type: "int", nullable: false),
                     Author = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -117,17 +118,17 @@ namespace LibraryApp.DataAccess.Migrations
                     Age = table.Column<int>(type: "int", nullable: false),
                     PhoneNumber = table.Column<float>(type: "real", nullable: false),
                     TotalSales = table.Column<float>(type: "real", nullable: false),
-                    RolesId = table.Column<int>(type: "int", nullable: true)
+                    RoleId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Employees", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Employees_Roles_RolesId",
-                        column: x => x.RolesId,
+                        name: "FK_Employees_Roles_RoleId",
+                        column: x => x.RoleId,
                         principalTable: "Roles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                    onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -188,7 +189,7 @@ namespace LibraryApp.DataAccess.Migrations
                     ClientId = table.Column<int>(type: "int", nullable: false),
                     BookId = table.Column<int>(type: "int", nullable: false),
                     EmployeeId = table.Column<int>(type: "int", nullable: true),
-                    BuyPrice = table.Column<int>(type: "int", nullable: false),
+                    TotalPrice = table.Column<int>(type: "int", nullable: false),
                     PurchaseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false)
                 },
@@ -236,9 +237,9 @@ namespace LibraryApp.DataAccess.Migrations
                 column: "RolesId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Employees_RolesId",
+                name: "IX_Employees_RoleId",
                 table: "Employees",
-                column: "RolesId");
+                column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Purchases_BookId",

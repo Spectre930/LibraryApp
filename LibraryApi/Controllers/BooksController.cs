@@ -70,7 +70,7 @@ namespace LibraryApi.Controllers
             if (book.Id != id)
                 return BadRequest();
 
-            _unitOfWork.Books.Update(book);
+            await _unitOfWork.Books.UpdateBooks(book);
             await _unitOfWork.SaveAsync();
 
             return NoContent();

@@ -23,7 +23,7 @@ public class Clients
     [Required]
     public DateTime DOB { get; set; }
 
-    [Required]
+    [AllowNull]
     public int Age { get; set; }
 
     [Range(0, 5)]

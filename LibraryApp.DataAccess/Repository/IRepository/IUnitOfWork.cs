@@ -1,4 +1,5 @@
-﻿using LibraryApp.Models.Models;
+﻿using LibraryApp.DataAccess.Repository.IRepository.IPeople;
+using LibraryApp.Models.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,13 +11,13 @@ namespace LibraryApp.DataAccess.Repository.IRepository;
 public interface IUnitOfWork
 {
     IRepository<Authors> Authors { get; }
-    IRepository<Books> Books { get; }
     IRepository<Borrow> Borrows { get; }
-    IRepository<Clients> Clients { get; }
-    IRepository<Employees> Employees { get; }
     IRepository<Genres> Genres { get; }
     IRepository<Roles> Roles { get; }
     IRepository<AuthorBook> AuthorBook { get; }
+    IBooksRepository Books { get; }
+    IEmployeesRepository Employees { get; }
+    IClientsRepository Clients { get; }
     IPurchasesRepository Purchases { get; }
     Task SaveAsync();
 }

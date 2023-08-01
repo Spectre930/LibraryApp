@@ -21,7 +21,8 @@ public class Purchases
     public Employees Employee { get; set; }
 
     [Required]
-    public int BuyPrice { get; set; }
+    [AllowNull]
+    public int TotalPrice { get; set; }
 
     public DateTime PurchaseDate { get; set; } = DateTime.Now;
 

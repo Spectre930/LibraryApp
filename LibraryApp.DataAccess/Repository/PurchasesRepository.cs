@@ -7,30 +7,29 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LibraryApp.DataAccess.Repository
+namespace LibraryApp.DataAccess.Repository;
+
+public class PurchasesRepository : Repository<Purchases>, IPurchasesRepository
 {
-    public class PurchasesRepository : Repository<Purchases>, IPurchasesRepository
+    private readonly LibraryContext _db;
+
+    public PurchasesRepository(LibraryContext db) : base(db)
     {
-        private LibraryContext _db;
+        _db = db;
+    }
 
-        public PurchasesRepository(LibraryContext db) : base(db)
+    public Purchases CreatePurchase(PurchasesDto p)
+    {
+        var purchase = new Purchases
         {
-            _db = db;
-        }
+            ClientId = p.ClientId,
+            BookId = p.BookId,
+            EmployeeId = p.EmployeeId,
+            Quantity = p.Quantity,
+        };
+        int price = purchase.Book.AuthPrice;
+        purchase.TotalPrice = (price + (price * 20 / 100)) * purchase.Quantity;
 
-        public Purchases CreatePurchase(PurchasesDto p)
-        {
-            var purchase = new Purchases
-            {
-                ClientId = p.ClientId,
-                BookId = p.BookId,
-                EmployeeId = p.EmployeeId,
-                Quantity = p.Quantity,
-            };
-            int price = purchase.Book.AuthPrice;
-            purchase.BuyPrice = price + (price * 20 / 100);
-
-            return purchase;
-        }
+        return purchase;
     }
 }

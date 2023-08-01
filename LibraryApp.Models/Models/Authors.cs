@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace LibraryApp.Models.Models;
 
@@ -21,6 +22,6 @@ public class Authors
     [Required]
     public DateTime DOB { get; set; }
 
-    [Required]
+    [AllowNull]
     public int Age { get; set; }
 }

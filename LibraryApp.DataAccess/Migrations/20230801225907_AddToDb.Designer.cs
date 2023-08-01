@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryApp.DataAccess.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    [Migration("20230730164008_fixRole1")]
-    partial class fixRole1
+    [Migration("20230801225907_AddToDb")]
+    partial class AddToDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -99,6 +99,9 @@ namespace LibraryApp.DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("GenreId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ListedPrice")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -246,9 +249,6 @@ namespace LibraryApp.DataAccess.Migrations
                         .HasColumnType("int")
                         .HasColumnOrder(1);
 
-                    b.Property<int>("BuyPrice")
-                        .HasColumnType("int");
-
                     b.Property<int>("EmployeeId")
                         .HasColumnType("int");
 
@@ -256,6 +256,9 @@ namespace LibraryApp.DataAccess.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalPrice")
                         .HasColumnType("int");
 
                     b.HasKey("ClientId", "BookId");

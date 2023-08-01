@@ -22,7 +22,7 @@ public class Employees
     [Required]
     public DateTime DOB { get; set; }
 
-    [Required]
+    [AllowNull]
     public int Age { get; set; }
     [Required]
     public float PhoneNumber { get; set; }

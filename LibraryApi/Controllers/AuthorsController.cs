@@ -42,6 +42,7 @@ namespace LibraryApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Create(Authors author)
         {
+            author.Age = DateTime.Now.Year - author.DOB.Year;
             await _unitOfWork.Authors.AddAsync(author);
             await _unitOfWork.SaveAsync();
 
