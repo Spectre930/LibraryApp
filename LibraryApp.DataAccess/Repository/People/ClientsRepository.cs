@@ -31,7 +31,7 @@ namespace LibraryApp.DataAccess.Repository.People
                 obj.L_Name = client.L_Name;
                 obj.Email = client.Email;
                 obj.DOB = client.DOB;
-                obj.Age = DateTime.Now.Year - obj.DOB.Year;
+                obj.Age = base.SetAge(client.DOB);
 
             }
             _db.Clients.Update(client);

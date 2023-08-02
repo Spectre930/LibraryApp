@@ -29,7 +29,7 @@ namespace LibraryApp.DataAccess.Repository
         {
             IQueryable<T> query = dbSet;
 
-            if(includes != null) 
+            if (includes != null)
             {
                 foreach (var include in includes)
                     query = query.Include(include);
@@ -46,7 +46,7 @@ namespace LibraryApp.DataAccess.Repository
                 foreach (var include in includes)
                     query = query.Include(include);
             }
-           
+
             return await query.FirstOrDefaultAsync(filter);
         }
 
@@ -58,6 +58,12 @@ namespace LibraryApp.DataAccess.Repository
         public void RemoveRange(IEnumerable<T> entities)
         {
             dbSet.RemoveRange(entities);
+        }
+
+        public int SetAge(DateTime dob)
+        {
+            return DateTime.Now.Year - dob.Year;
+
         }
 
         public void Update(T entity)

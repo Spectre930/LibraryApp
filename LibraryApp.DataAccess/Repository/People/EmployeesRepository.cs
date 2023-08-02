@@ -31,7 +31,7 @@ namespace LibraryApp.DataAccess.Repository.People
                 obj.L_Name = employee.L_Name;
                 obj.Email = employee.Email;
                 obj.DOB = employee.DOB;
-                obj.Age = DateTime.Now.Year - obj.DOB.Year;
+                obj.Age = base.SetAge(employee.DOB);
                 obj.PhoneNumber = employee.PhoneNumber;
                 obj.TotalSales = employee.TotalSales;
 

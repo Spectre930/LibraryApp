@@ -16,5 +16,6 @@ namespace LibraryApp.DataAccess.Repository.IRepository
         void Remove(T entity);
         void RemoveRange(IEnumerable<T> entities);
         void Update(T entity);
+        int SetAge(DateTime dob);
     }
 }

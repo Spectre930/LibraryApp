@@ -59,6 +59,8 @@ namespace LibraryApi.Controllers
             if (id != author.Id)
                 return BadRequest();
 
+            author.Age = _unitOfWork.Authors.SetAge(author.DOB);
+
             _unitOfWork.Authors.Update(author);
             await _unitOfWork.SaveAsync();
 

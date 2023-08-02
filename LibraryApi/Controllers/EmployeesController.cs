@@ -55,7 +55,7 @@ namespace LibraryApi.Controllers
                 L_Name = emp.L_Name,
                 Email = emp.Email,
                 DOB = emp.DOB,
-                Age = DateTime.Now.Year - emp.DOB.Year,
+                Age = _unitOfWork.Employees.SetAge(emp.DOB),
                 PhoneNumber = emp.PhoneNumber,
                 TotalSales = 0,
                 RoleId = emp.RoleId

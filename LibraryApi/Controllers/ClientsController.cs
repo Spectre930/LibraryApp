@@ -52,7 +52,7 @@ namespace LibraryApi.Controllers
                 L_Name = client.L_Name,
                 Email = client.Email,
                 DOB = client.DOB,
-                Age = DateTime.Now.Year - client.DOB.Year,
+                Age = _unitOfWork.Clients.SetAge(client.DOB),
                 RolesId = client.RolesId
             };
             await _unitOfWork.Clients.AddAsync(user);
