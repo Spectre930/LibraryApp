@@ -62,13 +62,13 @@ namespace LibraryApi.Controllers.Operations
                 BookId = dto.BookId,
                 ClientId = dto.ClientId,
                 BorrowDate = dto.BorrowDate,
-                ReturnDate = dto.ReturnDate,
+                ReturnDate = dto.BorrowDate.AddDays(14),
             };
 
             await _unitOfWork.Borrows.AddAsync(borrow);
             await _unitOfWork.SaveAsync();
 
-            return Ok(dto);
+            return Ok(borrow);
         }
 
 

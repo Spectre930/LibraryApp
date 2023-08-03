@@ -52,12 +52,11 @@ namespace LibraryApi.Controllers
         [Route("{id}/update")]
         [ProducesResponseType(typeof(Roles), StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update(int id)
+        public async Task<IActionResult> Update(int id, Roles role)
         {
 
-            var role = await _unitOfWork.Roles
-                                        .GetFirstOrDefaultAsync(x => x.Id == id);
-            if (role == null)
+
+            if (role.Id != id)
                 return BadRequest();
 
             _unitOfWork.Roles.Update(role);

@@ -4,6 +4,7 @@ using LibraryApp.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryApp.DataAccess.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    partial class LibraryContextModelSnapshot : ModelSnapshot
+    [Migration("20230802201523_fixBookAuthor")]
+    partial class fixBookAuthor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -234,17 +237,13 @@ namespace LibraryApp.DataAccess.Migrations
 
             modelBuilder.Entity("LibraryApp.Models.Models.Purchases", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
 
                     b.Property<int>("BookId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ClientId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnOrder(1);
 
                     b.Property<int>("EmployeeId")
                         .HasColumnType("int");
@@ -258,11 +257,9 @@ namespace LibraryApp.DataAccess.Migrations
                     b.Property<int>("TotalPrice")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("ClientId", "BookId");
 
                     b.HasIndex("BookId");
-
-                    b.HasIndex("ClientId");
 
                     b.HasIndex("EmployeeId");
 

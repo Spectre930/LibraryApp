@@ -58,7 +58,7 @@ namespace LibraryApi.Controllers
             await _unitOfWork.Clients.AddAsync(user);
             await _unitOfWork.SaveAsync();
 
-            return Ok(client);
+            return Ok(user);
         }
 
         [HttpPut]

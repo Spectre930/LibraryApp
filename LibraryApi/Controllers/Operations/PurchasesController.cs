@@ -47,13 +47,24 @@ namespace LibraryApi.Controllers.Operations
         [HttpPost]
         [Route("create")]
         [ProducesResponseType(typeof(Purchases), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Purchases), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create(PurchasesDto p)
         {
+            var book = await _unitOfWork.Books.GetFirstOrDefaultAsync(x => x.Id == p.BookId, null);
+
+            if (book.AvailableCopies < p.Quantity)
+                return BadRequest("The quantity you want is more than the quantity available");
+
             var purchase = _unitOfWork.Purchases.CreatePurchase(p);
+            book.AvailableCopies = _unitOfWork.Books.SetAvailableCopies(book.Copies, book.Copies - p.Quantity, book.AvailableCopies);
+            book.Copies -= p.Quantity;
+
+            _unitOfWork.Books.UpdateBooks(book);
+
             await _unitOfWork.Purchases.AddAsync(purchase);
             await _unitOfWork.SaveAsync();
 
-            return Ok(p);
+            return Ok(purchase);
         }
 
         // PUT api/<PurchasesController>/5

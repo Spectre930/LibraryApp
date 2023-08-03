@@ -6,12 +6,12 @@ namespace LibraryApp.Models.Models;
 public class Purchases
 {
 
-    [Key, Column(Order = 0)]
-
+    [Key]
+    public int Id { get; set; }
     public int ClientId { get; set; }
     public Clients Client { get; set; }
 
-    [Key, Column(Order = 1)]
+
     public int BookId { get; set; }
     public Books Book { get; set; }
 

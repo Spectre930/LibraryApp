@@ -31,5 +31,5 @@ public class Books
     [AllowNull]
     public int ListedPrice { get; set; }
 
-    public string Author { get; set; }
+
 }

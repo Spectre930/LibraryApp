@@ -10,5 +10,6 @@ public class BooksDTO
     public int Copies { get; set; }
     public int AvailableCopies { get; set; }
     public int AuthPrice { get; set; }
-    public string Author { get; set; }
+    public int ListedPrice { get; set; }
+    public string AuthorIds { get; set; }
 }

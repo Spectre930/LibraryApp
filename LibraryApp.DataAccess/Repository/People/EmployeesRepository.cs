@@ -36,7 +36,7 @@ namespace LibraryApp.DataAccess.Repository.People
                 obj.TotalSales = employee.TotalSales;
 
             }
-            _db.Employees.Update(employee);
+            _db.Employees.Update(obj);
 
         }
     }

@@ -14,7 +14,7 @@ public interface IUnitOfWork
     IRepository<Borrow> Borrows { get; }
     IRepository<Genres> Genres { get; }
     IRepository<Roles> Roles { get; }
-    IRepository<AuthorBook> AuthorBook { get; }
+    IBookAuthorRepository AuthorBook { get; }
     IBooksRepository Books { get; }
     IEmployeesRepository Employees { get; }
     IClientsRepository Clients { get; }

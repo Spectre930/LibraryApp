@@ -52,12 +52,14 @@ namespace LibraryApi.Controllers
                 Copies = dto.Copies,
                 AvailableCopies = dto.Copies,
                 AuthPrice = dto.AuthPrice,
-                Author = dto.Author
+                ListedPrice = _unitOfWork.Books.SetBookPrice(dto.AuthPrice, dto.ListedPrice),
             };
             await _unitOfWork.Books.AddAsync(book);
             await _unitOfWork.SaveAsync();
 
-            return Ok(dto);
+            await _unitOfWork.AuthorBook.AddAuthorBookAsync(dto.AuthorIds, book.Id);
+            await _unitOfWork.SaveAsync();
+            return Ok(book);
         }
 
         [HttpPut]
@@ -66,7 +68,7 @@ namespace LibraryApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Update(int id, Books book)
         {
-            //var book = await _unitOfWork.Books.Include(x => x.Genre).FirstOrDefaultAsync(x => x.Id == id);
+
             if (book.Id != id)
                 return BadRequest();
 

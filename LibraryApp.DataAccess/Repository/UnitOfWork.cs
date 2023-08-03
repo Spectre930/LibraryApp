@@ -13,7 +13,7 @@ public class UnitOfWork : IUnitOfWork, IDisposable
     public IRepository<Borrow> Borrows { get; private set; }
     public IRepository<Genres> Genres { get; private set; }
     public IRepository<Roles> Roles { get; private set; }
-    public IRepository<AuthorBook> AuthorBook { get; private set; }
+    public IBookAuthorRepository AuthorBook { get; private set; }
     public IBooksRepository Books { get; private set; }
     public IEmployeesRepository Employees { get; private set; }
     public IClientsRepository Clients { get; private set; }
@@ -26,7 +26,7 @@ public class UnitOfWork : IUnitOfWork, IDisposable
         Borrows = new Repository<Borrow>(_db);
         Genres = new Repository<Genres>(_db);
         Roles = new Repository<Roles>(_db);
-        AuthorBook = new Repository<AuthorBook>(_db);
+        AuthorBook = new BookAuthorRepository(_db);
         Clients = new ClientsRepository(_db);
         Books = new BooksRepository(_db);
         Employees = new EmployeesRepository(_db);

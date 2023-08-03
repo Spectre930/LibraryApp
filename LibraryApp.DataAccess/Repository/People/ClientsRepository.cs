@@ -34,7 +34,7 @@ namespace LibraryApp.DataAccess.Repository.People
                 obj.Age = base.SetAge(client.DOB);
 
             }
-            _db.Clients.Update(client);
+            _db.Clients.Update(obj);
 
         }
     }

@@ -16,6 +16,7 @@ public class PurchasesRepository : Repository<Purchases>, IPurchasesRepository
     public PurchasesRepository(LibraryContext db) : base(db)
     {
         _db = db;
+
     }
 
     public Purchases CreatePurchase(PurchasesDto p)
@@ -27,9 +28,13 @@ public class PurchasesRepository : Repository<Purchases>, IPurchasesRepository
             EmployeeId = p.EmployeeId,
             Quantity = p.Quantity,
         };
-        int price = purchase.Book.AuthPrice;
-        purchase.TotalPrice = (price + (price * 20 / 100)) * purchase.Quantity;
+        var book = _db.Books.FirstOrDefault(x => x.Id == purchase.BookId);
 
+        purchase.TotalPrice = book.ListedPrice * p.Quantity;
+        var emp = _db.Employees.FirstOrDefault(x => x.Id == p.EmployeeId);
+        emp.TotalSales += purchase.TotalPrice;
         return purchase;
     }
+
+
 }
