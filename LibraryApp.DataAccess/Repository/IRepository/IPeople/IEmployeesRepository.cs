@@ -10,5 +10,7 @@ namespace LibraryApp.DataAccess.Repository.IRepository.IPeople
     public interface IEmployeesRepository : IRepository<Employees>
     {
         Task UpdateEmployee(Employees employee);
+        Task MakeAdmin(int id);
+        Task RemoveAdmin(int id);
     }
 }

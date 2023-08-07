@@ -1,0 +1,76 @@
+﻿@model LibraryApp.Models.ViewModels.BooksIndexVM
+
+<form method="post" asp-action="DeletePOST">
+    <input asp-for="book.Id" hidden class="form-control" />
+    <div class="border p-3 mt-4 row">
+        <div class="row pb-2">
+            <h2 class="text-bg-danger">Delete Client</h2>
+            <hr />
+        </div>
+        <div class="mb-3 col-6">
+            <label asp-for="book.Title">Title</label>
+            <input asp-for="book.Title" class="form-control" />
+            <span asp-validation-for="book.Title" class="text-danger"></span>
+        </div>
+        <div class="mb-3 col-6">
+            <label asp-for="book.Copies">Copies</label>
+            <input asp-for="book.Copies" class="form-control" />
+            <span asp-validation-for="book.Copies" class="text-danger"></span>
+        </div>
+        <div class="mb-3 col-6">
+            <label asp-for="book.AvailableCopies">Available Copies</label>
+            <input asp-for="book.AvailableCopies" class="form-control" />
+            <span asp-validation-for="book.AvailableCopies" class="text-danger"></span>
+        </div>
+        <div class="mb-3 col-6">
+            <label asp-for="book.AuthPrice">Author Price</label>
+            <input asp-for="book.AuthPrice" class="form-control" />
+            <span asp-validation-for="book.AuthPrice" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3 col-6">
+            <label asp-for="book.ListedPrice">Listed Price</label>
+            <input asp-for="book.ListedPrice" class="form-control" />
+            <span asp-validation-for="book.ListedPrice" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3 col-6">
+            <label asp-for="book.Genre.Name">Genre</label>
+            <input asp-for="book.Genre.Name" class="form-control" />
+            <span asp-validation-for="book.Genre.Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3 col-6">
+            <label asp-for="book.Description">Description</label>
+            <textarea asp-for="book.Description" class="form-control"></textarea>
+            <span asp-validation-for="book.Description" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3 col-6">
+            <div class="dropdown">
+                 <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Authors
+                </button> 
+                <ul class="dropdown-menu">
+                    @foreach (var a in Model.authors)
+                    {
+                        <li class="m-1">@a</li>
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <button type="submit" class="btn btn-danger" style="width:150px">Delete</button>
+            <a asp-controller="Books" asp-action="Index" class="btn btn-secondary" style="width:150px">
+                Back to List
+            </a>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

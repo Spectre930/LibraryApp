@@ -1,0 +1,64 @@
+﻿@model LibraryApp.Models.ViewModels.BooksEditVM
+
+<form method="post" asp-action="Edit">
+    <input asp-for="book.Id" hidden class="form-control" />
+    <div class="border p-3 mt-4 row">
+        <div class="row pb-2">
+            <h2 class="text-bg-Warning">Edit Book</h2>
+            <hr />
+        </div>
+        @*<div asp-validation-summary="All"></div>*@
+        <div class="mb-3 col-6">
+            <label asp-for="book.Title">Title</label>
+            <input asp-for="book.Title" class="form-control" />
+            <span asp-validation-for="book.Title" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3 col-3">
+            <label asp-for="book.Copies">Copies</label>
+            <input asp-for="book.Copies" class="form-control" required />
+            <span asp-validation-for="book.Copies" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3 col-3">
+            <label asp-for="book.AuthPrice">Author Price</label>
+            <input asp-for="book.AuthPrice" class="form-control" required />
+            <span asp-validation-for="book.AuthPrice" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3 col-6">
+            <label asp-for="book.ListedPrice">Listed Price</label>
+            <input asp-for="book.ListedPrice" class="form-control" />
+            <span asp-validation-for="book.ListedPrice" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3 col-6">
+            <label asp-for="book.GenreId">Genre</label>
+            <select asp-for="book.GenreId" asp-items="@Model.GenresList" class="form-select">
+                <option disabled selected>--Select Genre--</option>
+            </select>
+
+        </div>
+
+        <div class="mb-3 col-12">
+            <label asp-for="book.Description">Description</label>
+            <textarea asp-for="book.Description" class="form-control"></textarea>
+            <span asp-validation-for="book.Description" class="text-danger"></span>
+        </div>
+
+
+
+        <div class="col-12">
+            <button type="submit" class="btn btn-warning" style="width:150px">Update</button>
+            <a asp-controller="Books" asp-action="Index" class="btn btn-secondary" style="width:150px">
+                Back to List
+            </a>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

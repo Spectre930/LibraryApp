@@ -10,9 +10,9 @@ public class UnitOfWork : IUnitOfWork, IDisposable
 {
     private readonly LibraryContext _db;
     public IRepository<Authors> Authors { get; private set; }
-    public IRepository<Borrow> Borrows { get; private set; }
     public IRepository<Genres> Genres { get; private set; }
     public IRepository<Roles> Roles { get; private set; }
+    public IBorrowsRepository Borrows { get; private set; }
     public IBookAuthorRepository AuthorBook { get; private set; }
     public IBooksRepository Books { get; private set; }
     public IEmployeesRepository Employees { get; private set; }
@@ -23,9 +23,9 @@ public class UnitOfWork : IUnitOfWork, IDisposable
     {
         _db = db;
         Authors = new Repository<Authors>(_db);
-        Borrows = new Repository<Borrow>(_db);
         Genres = new Repository<Genres>(_db);
         Roles = new Repository<Roles>(_db);
+        Borrows = new BorrowsRepository(_db);
         AuthorBook = new BookAuthorRepository(_db);
         Clients = new ClientsRepository(_db);
         Books = new BooksRepository(_db);

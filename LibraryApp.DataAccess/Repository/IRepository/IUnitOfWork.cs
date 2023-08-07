@@ -11,9 +11,9 @@ namespace LibraryApp.DataAccess.Repository.IRepository;
 public interface IUnitOfWork
 {
     IRepository<Authors> Authors { get; }
-    IRepository<Borrow> Borrows { get; }
     IRepository<Genres> Genres { get; }
     IRepository<Roles> Roles { get; }
+    IBorrowsRepository Borrows { get; }
     IBookAuthorRepository AuthorBook { get; }
     IBooksRepository Books { get; }
     IEmployeesRepository Employees { get; }

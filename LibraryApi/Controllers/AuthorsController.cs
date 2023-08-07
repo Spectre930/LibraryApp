@@ -42,7 +42,7 @@ namespace LibraryApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Create(Authors author)
         {
-            author.Age = DateTime.Now.Year - author.DOB.Year;
+            author.Age = _unitOfWork.Authors.SetAge(author.DOB);
             await _unitOfWork.Authors.AddAsync(author);
             await _unitOfWork.SaveAsync();
 
@@ -50,7 +50,7 @@ namespace LibraryApi.Controllers
         }
 
         [HttpPut]
-        [Route("{id}/update")]
+        [Route("update/{id}")]
         [ProducesResponseType(typeof(Authors), StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Update(int id, Authors author)
@@ -68,7 +68,7 @@ namespace LibraryApi.Controllers
         }
 
         [HttpDelete]
-        [Route("{id}/delete")]
+        [Route("delete/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(int id)
@@ -77,7 +77,7 @@ namespace LibraryApi.Controllers
 
             if (authorToDelete == null)
                 return NotFound();
-
+            _unitOfWork.AuthorBook.DeletAuthorBooksOfAuthor(id);
             _unitOfWork.Authors.Remove(authorToDelete);
             await _unitOfWork.SaveAsync();
 

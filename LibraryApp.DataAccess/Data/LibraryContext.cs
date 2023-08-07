@@ -10,7 +10,7 @@ public class LibraryContext : DbContext
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Borrow>().HasKey(b => new { b.ClientId, b.BookId });
+        //modelBuilder.Entity<Borrow>().HasKey(b => new { b.ClientId, b.BookId });
         modelBuilder.Entity<AuthorBook>().HasKey(ab => new { ab.AuthorId, ab.BookId });
         //modelBuilder.Entity<Purchases>().HasKey(p => new { p.ClientId, p.BookId });
 

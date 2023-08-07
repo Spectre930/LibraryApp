@@ -10,5 +10,6 @@ namespace LibraryApp.DataAccess.Repository.IRepository;
 
 public interface IPurchasesRepository : IRepository<Purchases>
 {
-    Purchases CreatePurchase(PurchasesDto p);
+    Task<Purchases> CreatePurchase(PurchasesDto p);
+
 }

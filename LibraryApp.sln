@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryApp.Models", "Librar
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryApi", "LibraryApi\LibraryApi.csproj", "{1229CB4F-C3BA-4968-9CA8-15F4CB5B1541}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryAppWeb", "LibraryAppWeb\LibraryAppWeb.csproj", "{D75503F1-CEE7-451D-8674-6BB0AD8384A1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryApp.Web", "Libraryapp.Web\LibraryApp.Web.csproj", "{24BB9889-9DBA-4E13-8325-57D96AEF2922}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +35,10 @@ Global
 		{1229CB4F-C3BA-4968-9CA8-15F4CB5B1541}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1229CB4F-C3BA-4968-9CA8-15F4CB5B1541}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1229CB4F-C3BA-4968-9CA8-15F4CB5B1541}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D75503F1-CEE7-451D-8674-6BB0AD8384A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D75503F1-CEE7-451D-8674-6BB0AD8384A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D75503F1-CEE7-451D-8674-6BB0AD8384A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D75503F1-CEE7-451D-8674-6BB0AD8384A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24BB9889-9DBA-4E13-8325-57D96AEF2922}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24BB9889-9DBA-4E13-8325-57D96AEF2922}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24BB9889-9DBA-4E13-8325-57D96AEF2922}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24BB9889-9DBA-4E13-8325-57D96AEF2922}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

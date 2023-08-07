@@ -53,7 +53,7 @@ public class GenresController : ControllerBase
     }
 
     [HttpPut]
-    [Route("{id}/update")]
+    [Route("update/{id}")]
     [ProducesResponseType(typeof(Genres), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Update(int id, Genres genre)
@@ -69,7 +69,7 @@ public class GenresController : ControllerBase
     }
 
     [HttpDelete]
-    [Route("{id}/delete")]
+    [Route("delete/{id}")]
     [ProducesResponseType(typeof(Genres), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id)

@@ -19,8 +19,9 @@ public class PurchasesRepository : Repository<Purchases>, IPurchasesRepository
 
     }
 
-    public Purchases CreatePurchase(PurchasesDto p)
+    public async Task<Purchases> CreatePurchase(PurchasesDto p)
     {
+
         var purchase = new Purchases
         {
             ClientId = p.ClientId,
@@ -28,11 +29,14 @@ public class PurchasesRepository : Repository<Purchases>, IPurchasesRepository
             EmployeeId = p.EmployeeId,
             Quantity = p.Quantity,
         };
-        var book = _db.Books.FirstOrDefault(x => x.Id == purchase.BookId);
+
+        var book = await _db.Books.FindAsync(p.BookId);
 
         purchase.TotalPrice = book.ListedPrice * p.Quantity;
+
         var emp = _db.Employees.FirstOrDefault(x => x.Id == p.EmployeeId);
         emp.TotalSales += purchase.TotalPrice;
+
         return purchase;
     }
 

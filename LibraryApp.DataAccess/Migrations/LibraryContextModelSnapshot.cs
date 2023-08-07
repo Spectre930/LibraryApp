@@ -110,16 +110,20 @@ namespace LibraryApp.DataAccess.Migrations
 
             modelBuilder.Entity("LibraryApp.Models.Models.Borrow", b =>
                 {
-                    b.Property<int>("ClientId")
-                        .HasColumnType("int")
-                        .HasColumnOrder(1);
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("BookId")
-                        .HasColumnType("int")
-                        .HasColumnOrder(0);
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("BorrowDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
 
                     b.Property<float>("LateReturnFee")
                         .HasColumnType("real");
@@ -127,9 +131,11 @@ namespace LibraryApp.DataAccess.Migrations
                     b.Property<DateTime>("ReturnDate")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("ClientId", "BookId");
+                    b.HasKey("Id");
 
                     b.HasIndex("BookId");
+
+                    b.HasIndex("ClientId");
 
                     b.ToTable("Borrows");
                 });

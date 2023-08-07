@@ -1,0 +1,45 @@
+﻿@model Authors
+
+<form method="post">
+    <div class="border p-3 mt-4 row">
+        <div class="row pb-2">
+            <h2 class="text-bg-success">Create Author</h2>
+            <hr />
+        </div>
+        @*<div asp-validation-summary="All"></div>*@
+        <div class="mb-3 col-6">
+            <label asp-for="F_Name">First Name</label>
+            <input asp-for="F_Name" class="form-control" />
+            <span asp-validation-for="F_Name" class="text-danger"></span>
+        </div>
+        <div class="mb-3 col-6">
+                <label asp-for="L_Name">Last Name</label>
+                <input asp-for="L_Name" class="form-control" />
+                <span asp-validation-for="L_Name" class="text-danger"></span>
+        </div>
+         <div class="mb-3 col-6">
+            <label asp-for="DOB">Date Of Birth</label>
+            <input asp-for="DOB" class="form-control" />
+            <span asp-validation-for="DOB" class="text-danger"></span>
+        </div>
+       
+        <div class="mb-3 col-6">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+       
+        <div class="col-12">
+        <button type="submit" class="btn btn-success" style="width:150px">Create</button>
+        <a asp-controller="Authors" asp-action="Index" class="btn btn-secondary" style="width:150px">
+            Back to List
+            </a>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

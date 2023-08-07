@@ -4,6 +4,7 @@ using LibraryApp.Models.DTO;
 using LibraryApp.Models.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace LibraryApi.Controllers
 {
@@ -23,7 +24,10 @@ namespace LibraryApi.Controllers
         [Route("getall")]
         public async Task<IEnumerable<Books>> GetAll()
         {
+
+
             return await _unitOfWork.Books.GetAllAsync(new[] { "Genre" });
+
         }
 
         [HttpGet("id")]
@@ -44,6 +48,10 @@ namespace LibraryApi.Controllers
         [ProducesResponseType(typeof(Books), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create(BooksDTO dto)
         {
+            if (dto.AuthorIds == null)
+                return BadRequest("The book should have at least one author");
+
+
             var book = new Books
             {
                 Title = dto.Title,
@@ -63,13 +71,13 @@ namespace LibraryApi.Controllers
         }
 
         [HttpPut]
-        [Route("{id}/update")]
+        [Route("update")]
         [ProducesResponseType(typeof(Books), StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update(int id, Books book)
+        public async Task<IActionResult> Update(Books book)
         {
 
-            if (book.Id != id)
+            if (await _unitOfWork.Books.GetFirstOrDefaultAsync(b => b.Id == book.Id) == null)
                 return BadRequest();
 
             await _unitOfWork.Books.UpdateBooks(book);
@@ -79,7 +87,7 @@ namespace LibraryApi.Controllers
         }
 
         [HttpDelete]
-        [Route("{id}/delete")]
+        [Route("delete/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(int id)
@@ -93,6 +101,21 @@ namespace LibraryApi.Controllers
             await _unitOfWork.SaveAsync();
 
             return NoContent();
+        }
+
+        [HttpGet("getauthors/id")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetAuthors(int id)
+        {
+            var book = await _unitOfWork.Books.GetFirstOrDefaultAsync(x => x.Id == id, new[] { "Genre" });
+
+            if (book == null)
+                return NotFound();
+
+            var authors = await _unitOfWork.AuthorBook.GetAuthorsAsync(id);
+
+            return Ok(authors);
         }
 
     }

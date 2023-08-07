@@ -6,12 +6,14 @@ namespace LibraryApp.Models.Models;
 
 public class Borrow
 {
-    [Key, Column(Order = 0)]
+    [Key]
+    public int Id { get; set; } 
+    
     [Required]
     public int BookId { get; set; }
     public Books Book { get; set; }
 
-    [Key, Column(Order = 1)]
+    
     [Required]
     public int ClientId { get; set; }
     public Clients Client { get; set; }
