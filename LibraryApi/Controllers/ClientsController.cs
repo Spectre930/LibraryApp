@@ -1,10 +1,8 @@
-﻿using LibraryApp.DataAccess;
-using LibraryApp.DataAccess.Repository.IRepository;
+﻿using LibraryApp.DataAccess.Repository.IRepository;
 using LibraryApp.Models.DTO;
 using LibraryApp.Models.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace LibraryApi.Controllers
 {
@@ -27,7 +25,8 @@ namespace LibraryApi.Controllers
             return await _unitOfWork.Clients.GetAllAsync(new[] { "Roles" });
         }
 
-        [HttpGet("id")]
+        [HttpGet]
+        [Route("get/id")]
         [ProducesResponseType(typeof(Clients), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Get(int id)
@@ -62,13 +61,13 @@ namespace LibraryApi.Controllers
         }
 
         [HttpPut]
-        [Route("{id}/update")]
+        [Route("update/{id}")]
         [ProducesResponseType(typeof(Clients), StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update(int id, Clients client)
+        public async Task<IActionResult> Update(Clients client)
         {
 
-            if (client.Id != id)
+            if (await _unitOfWork.Clients.GetFirstOrDefaultAsync(i => i.Id == client.Id) == null)
                 return BadRequest();
 
             await _unitOfWork.Clients.UpdateClient(client);
@@ -78,7 +77,7 @@ namespace LibraryApi.Controllers
         }
 
         [HttpDelete]
-        [Route("{id}/delete")]
+        [Route("delete/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(int id)

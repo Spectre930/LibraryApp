@@ -68,12 +68,12 @@ namespace LibraryApi.Controllers
         }
 
         [HttpPut]
-        [Route("{id}/update")]
+        [Route("update/{id}")]
         [ProducesResponseType(typeof(Employees), StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update(int id, Employees employee)
+        public async Task<IActionResult> Update(Employees employee)
         {
-            if (employee.Id != id)
+            if (await _unitOfWork.Employees.GetFirstOrDefaultAsync(i => i.Id == employee.Id) == null)
                 return BadRequest();
 
             await _unitOfWork.Employees.UpdateEmployee(employee);
@@ -83,7 +83,7 @@ namespace LibraryApi.Controllers
         }
 
         [HttpDelete]
-        [Route("{id}/delete")]
+        [Route("delete/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(int id)

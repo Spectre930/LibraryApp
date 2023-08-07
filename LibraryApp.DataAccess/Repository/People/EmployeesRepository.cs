@@ -17,6 +17,21 @@ namespace LibraryApp.DataAccess.Repository.People
         {
             _db = db;
         }
+
+        public async Task MakeAdmin(int id)
+        {
+            var obj = await _db.Employees.FirstOrDefaultAsync(x => x.Id == id);
+            obj.RoleId = 1;
+            UpdateEmployee(obj);
+        }
+
+        public async Task RemoveAdmin(int id)
+        {
+            var obj = await _db.Employees.FirstOrDefaultAsync(x => x.Id == id);
+            obj.RoleId = null;
+            UpdateEmployee(obj);
+        }
+
         public async Task UpdateEmployee(Employees employee)
         {
             var obj = await _db.Employees.FirstOrDefaultAsync(x => x.Id == employee.Id);
@@ -25,6 +40,7 @@ namespace LibraryApp.DataAccess.Repository.People
             {
                 if (obj.RoleId != employee.RoleId)
                 {
+                    obj.RoleId= employee.RoleId;
                     obj.Role = await _db.Roles.FindAsync(employee.RoleId);
                 }
                 obj.F_Name = employee.F_Name;

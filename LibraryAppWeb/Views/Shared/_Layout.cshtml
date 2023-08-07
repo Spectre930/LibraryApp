@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - LibraryAppWeb</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/LibraryAppWeb.styles.css" asp-append-version="true" />
 </head>
@@ -32,13 +33,14 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
+            <partial name="_Notification" />
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2023 - LibraryAppWeb - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="footer fixed-bottom text-muted bg-primary">
+        <div class="container text-secondary">
+            &copy; 2023 - LibraryAppWeb
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

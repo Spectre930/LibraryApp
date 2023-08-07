@@ -31,12 +31,12 @@ namespace LibraryApi.Controllers.Operations
         }
 
         // GET api/<PurchasesController>/5
-        [HttpGet("{clientId}_{bookId}")]
+        [HttpGet("{id}")]
         [ProducesResponseType(typeof(Purchases), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Get(int clientId, int bookId)
+        public async Task<IActionResult> Get(int id)
         {
-            var purchase = await _unitOfWork.Purchases.GetFirstOrDefaultAsync(x => x.BookId == bookId && x.ClientId == clientId);
+            var purchase = await _unitOfWork.Purchases.GetFirstOrDefaultAsync(x => x.Id == id);
             if (purchase == null)
                 return NotFound();
 
@@ -69,13 +69,13 @@ namespace LibraryApi.Controllers.Operations
 
         // PUT api/<PurchasesController>/5
         [HttpPut]
-        [Route("{clientId}_{bookId}/update")]
+        [Route("{id}/update")]
         [ProducesResponseType(typeof(Purchases), StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update(int clientId, int bookId, Purchases purchase)
+        public async Task<IActionResult> Update(int id, Purchases purchase)
         {
 
-            if (purchase.ClientId == clientId && purchase.BookId == bookId)
+            if (purchase.Id == id)
             {
                 _unitOfWork.Purchases.Update(purchase);
                 await _unitOfWork.SaveAsync();
@@ -86,12 +86,12 @@ namespace LibraryApi.Controllers.Operations
 
         // DELETE api/<PurchasesController>/5
         [HttpDelete]
-        [Route("{clientId}_{bookId}/delete")]
+        [Route("{id}/delete")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Delete(int clientId, int bookId)
+        public async Task<IActionResult> Delete(int id)
         {
-            var purchaseToDelete = await _unitOfWork.Purchases.GetFirstOrDefaultAsync(x => x.BookId == bookId && x.ClientId == clientId);
+            var purchaseToDelete = await _unitOfWork.Purchases.GetFirstOrDefaultAsync(x => x.Id == id);
 
             if (purchaseToDelete == null)
                 return NotFound();
