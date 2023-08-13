@@ -1,4 +1,6 @@
-﻿using LibraryApp.DataAccess.Repository.IRepository.IPeople;
+﻿using LibraryApp.DataAccess.Repository.IRepository;
+using LibraryApp.DataAccess.Repository.IRepository.IPeople;
+using LibraryApp.Models.DTO;
 using LibraryApp.Models.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -18,18 +20,43 @@ namespace LibraryApp.DataAccess.Repository.People
             _db = db;
         }
 
+        public async Task<Employees> CreateEmployee(EmployeesDto emp)
+        {
+            var employee = new Employees
+            {
+                F_Name = emp.F_Name,
+                L_Name = emp.L_Name,
+                Email = emp.Email,
+                DOB = emp.DOB,
+                Age = SetAge(emp.DOB),
+                PhoneNumber = emp.PhoneNumber,
+            };
+            if (emp.admin)
+            {
+                employee.Role = await _db.Roles.FirstOrDefaultAsync(r => r.Role == "Admin");
+                employee.RoleId = employee.Role.Id;
+            }
+            else
+            {
+                employee.Role = await _db.Roles.FirstOrDefaultAsync(r => r.Role == "Employee");
+                employee.RoleId = employee.Role.Id;
+            }
+
+            return employee;
+        }
+
         public async Task MakeAdmin(int id)
         {
             var obj = await _db.Employees.FirstOrDefaultAsync(x => x.Id == id);
             obj.RoleId = 1;
-            UpdateEmployee(obj);
+            await UpdateEmployee(obj);
         }
 
         public async Task RemoveAdmin(int id)
         {
             var obj = await _db.Employees.FirstOrDefaultAsync(x => x.Id == id);
-            obj.RoleId = null;
-            UpdateEmployee(obj);
+            obj.RoleId = 4;
+            await UpdateEmployee(obj);
         }
 
         public async Task UpdateEmployee(Employees employee)
@@ -40,7 +67,7 @@ namespace LibraryApp.DataAccess.Repository.People
             {
                 if (obj.RoleId != employee.RoleId)
                 {
-                    obj.RoleId= employee.RoleId;
+                    obj.RoleId = employee.RoleId;
                     obj.Role = await _db.Roles.FindAsync(employee.RoleId);
                 }
                 obj.F_Name = employee.F_Name;
@@ -49,7 +76,6 @@ namespace LibraryApp.DataAccess.Repository.People
                 obj.DOB = employee.DOB;
                 obj.Age = base.SetAge(employee.DOB);
                 obj.PhoneNumber = employee.PhoneNumber;
-                obj.TotalSales = employee.TotalSales;
 
             }
             _db.Employees.Update(obj);

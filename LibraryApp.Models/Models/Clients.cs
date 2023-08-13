@@ -18,7 +18,11 @@ public class Clients
     public string L_Name { get; set; }
 
     [Required]
+    
     public string Email { get; set; }
+   
+    public byte[] PasswordHash { get; set; }
+    public byte[] PasswordSalt { get; set; }
 
     [Required]
     public DateTime DOB { get; set; }

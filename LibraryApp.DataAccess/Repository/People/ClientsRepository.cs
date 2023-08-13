@@ -1,13 +1,8 @@
-﻿using LibraryApp.DataAccess.Repository.IRepository;
-using LibraryApp.DataAccess.Repository.IRepository.IPeople;
+﻿using LibraryApp.DataAccess.Repository.IRepository.IPeople;
 using LibraryApp.Models.DTO;
 using LibraryApp.Models.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace LibraryApp.DataAccess.Repository.People
 {
@@ -34,8 +29,7 @@ namespace LibraryApp.DataAccess.Repository.People
             };
             user.Roles = await _db.Roles.FirstOrDefaultAsync(r => r.Role == "User");
             user.RolesId = user.Roles.Id;
-            await _db.Clients.AddAsync(user);
-            await _db.SaveChangesAsync();
+
             return user;
         }
 
@@ -73,7 +67,7 @@ namespace LibraryApp.DataAccess.Repository.People
                 obj.L_Name = client.L_Name;
                 obj.Email = client.Email;
                 obj.DOB = client.DOB;
-                obj.Age = base.SetAge(client.DOB);
+                obj.Age = SetAge(client.DOB);
 
             }
             _db.Clients.Update(obj);

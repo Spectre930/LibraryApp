@@ -19,6 +19,10 @@ public class Employees
     [Required]
     public string Email { get; set; }
 
+
+    public byte[] PasswordHash { get; set; }
+    public byte[] PasswordSalt { get; set; }
+
     [Required]
     public DateTime DOB { get; set; }
 
@@ -26,9 +30,6 @@ public class Employees
     public int Age { get; set; }
     [Required]
     public float PhoneNumber { get; set; }
-
-    [AllowNull]
-    public float TotalSales { get; set; }
 
     public int? RoleId { get; set; }
     public virtual Roles? Role { get; set; } = null!;

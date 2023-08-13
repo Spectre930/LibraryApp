@@ -1,4 +1,5 @@
-﻿using LibraryApp.DataAccess.Repository.IRepository;
+﻿using LibraryApp.DataAccess.AuthenticationRepository.IAuthenticationRepository;
+using LibraryApp.DataAccess.Repository.IRepository;
 using LibraryApp.Models.DTO;
 using LibraryApp.Models.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -11,10 +12,12 @@ namespace LibraryApi.Controllers
     public class ClientsController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IAuthUnitOfWork _authUnitOfWork;
 
-        public ClientsController(IUnitOfWork unitOfWork)
+        public ClientsController(IUnitOfWork unitOfWork, IAuthUnitOfWork authUnitOfWork)
         {
             _unitOfWork = unitOfWork;
+            _authUnitOfWork = authUnitOfWork;
         }
 
         [HttpGet]
@@ -104,6 +107,27 @@ namespace LibraryApi.Controllers
 
 
             return NoContent();
+        }
+
+        [HttpPost]
+        [Route("register")]
+        [ProducesResponseType(typeof(Clients), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Register(ClientsDto dto)
+        {
+            var client = await _authUnitOfWork.Clients.Register(dto);
+
+            return Ok(client);
+        }
+
+        [HttpGet]
+        [Route("login")]
+        [ProducesResponseType(typeof(Clients), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> login(string email, string password)
+        {
+            var client = await _authUnitOfWork.Clients.Login(email, password);
+
+            return Ok(client);
         }
 
     }

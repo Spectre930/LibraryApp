@@ -8,17 +8,12 @@ public class Purchases
 
     [Key]
     public int Id { get; set; }
+    [Required]
     public int ClientId { get; set; }
     public Clients Client { get; set; }
-
-
+    [Required]
     public int BookId { get; set; }
     public Books Book { get; set; }
-
-    [AllowNull]
-    public int EmployeeId { get; set; }
-    [AllowNull]
-    public Employees Employee { get; set; }
 
     [Required]
     [AllowNull]

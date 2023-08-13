@@ -1,4 +1,6 @@
 using LibraryApp.DataAccess;
+using LibraryApp.DataAccess.AuthenticationRepository;
+using LibraryApp.DataAccess.AuthenticationRepository.IAuthenticationRepository;
 using LibraryApp.DataAccess.Repository;
 using LibraryApp.DataAccess.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IAuthUnitOfWork, AuthUnitOfWork>();
 builder.Services.AddDbContext<LibraryContext>(options => options.UseSqlServer(
 builder.Configuration.GetConnectionString("DefaultConnection")
 ));
@@ -25,7 +28,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

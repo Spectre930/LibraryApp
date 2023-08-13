@@ -1,43 +1,43 @@
-﻿@model LibraryApp.Models.ViewModels.EmployeesVM;
+﻿@model LibraryApp.Models.DTO.EmployeesDto
 
 <form method="post">
     <div class="border p-3 mt-4 row">
         <div class="row pb-2">
-            <h2 class="text-bg-success">Create Employee</h2>
+            <h2 class="text-bg-success">Create @Model</h2>
             <hr />
         </div>
         @*<div asp-validation-summary="All"></div>*@
         <div class="mb-3 col-6">
-            <label asp-for="employee.F_Name">First Name</label>
-            <input asp-for="employee.F_Name" class="form-control" />
-            <span asp-validation-for="employee.F_Name" class="text-danger"></span>
+            <label asp-for="@Model.F_Name">First Name</label>
+            <input asp-for="@Model.F_Name" class="form-control" />
+            <span asp-validation-for="@Model.F_Name" class="text-danger"></span>
         </div>
         <div class="mb-3 col-6">
-                <label asp-for="employee.L_Name">Last Name</label>
-                <input asp-for="employee.L_Name" class="form-control" />
-                <span asp-validation-for="employee.L_Name" class="text-danger"></span>
+                <label asp-for="@Model.L_Name">Last Name</label>
+                <input asp-for="@Model.L_Name" class="form-control" />
+                <span asp-validation-for="@Model.L_Name" class="text-danger"></span>
         </div>
         <div class="mb-3 col-6">
-            <label asp-for="employee.DOB">Date Of Birth</label>
-            <input asp-for="employee.DOB" class="form-control" />
-            <span asp-validation-for="employee.DOB" class="text-danger"></span>
+            <label asp-for="@Model.DOB">Date Of Birth</label>
+            <input asp-for="@Model.DOB" class="form-control" />
+            <span asp-validation-for="@Model.DOB" class="text-danger"></span>
         </div>
 
         <div class="mb-3 col-6">
-            <label asp-for="employee.PhoneNumber">Phone Number</label>
-            <input asp-for="employee.PhoneNumber" class="form-control" />
-            <span asp-validation-for="employee.PhoneNumber" class="text-danger"></span>
+            <label asp-for="@Model.PhoneNumber">Phone Number</label>
+            <input asp-for="@Model.PhoneNumber" class="form-control" />
+            <span asp-validation-for="@Model.PhoneNumber" class="text-danger"></span>
         </div>
        
         <div class="mb-3 col-6">
-            <label asp-for="employee.Email"></label>
-            <input asp-for="employee.Email" class="form-control" />
-            <span asp-validation-for="employee.Email" class="text-danger"></span>
+            <label asp-for="@Model.Email"></label>
+            <input asp-for="@Model.Email" class="form-control" />
+            <span asp-validation-for="@Model.Email" class="text-danger"></span>
         </div>
         
         <div class="form-check form-switch m-3 col-6">
-            <input class="form-check-input" asp-for="Admin" type="checkbox" id="flexSwitchCheckDefault">
-            <label class="form-check-label" asp-for="Admin" for="flexSwitchCheckDefault">Admin</label>
+            <input class="form-check-input" asp-for="@Model.admin" type="checkbox" id="flexSwitchCheckDefault">
+            <label class="form-check-label" asp-for="@Model.admin" for="flexSwitchCheckDefault">Admin</label>
         </div>
         
         <div class="col-12">

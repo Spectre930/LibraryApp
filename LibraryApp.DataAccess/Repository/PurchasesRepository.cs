@@ -26,16 +26,11 @@ public class PurchasesRepository : Repository<Purchases>, IPurchasesRepository
         {
             ClientId = p.ClientId,
             BookId = p.BookId,
-            EmployeeId = p.EmployeeId,
             Quantity = p.Quantity,
         };
 
         var book = await _db.Books.FindAsync(p.BookId);
-
         purchase.TotalPrice = book.ListedPrice * p.Quantity;
-
-        var emp = _db.Employees.FirstOrDefault(x => x.Id == p.EmployeeId);
-        emp.TotalSales += purchase.TotalPrice;
 
         return purchase;
     }

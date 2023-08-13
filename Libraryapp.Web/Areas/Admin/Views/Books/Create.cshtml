@@ -20,13 +20,13 @@
        
         <div class="mb-3 col-3">
             <label asp-for="book.AuthPrice">Author Price</label>
-            <input asp-for="book.AuthPrice" class="form-control" required />
+            <input id="authPrice" asp-for="book.AuthPrice" class="form-control" required />
             <span asp-validation-for="book.AuthPrice" class="text-danger"></span>
         </div>
 
         <div class="mb-3 col-6">
             <label asp-for="book.ListedPrice">Listed Price</label>
-            <input asp-for="book.ListedPrice" class="form-control" />
+            <input id="Price" asp-for="book.ListedPrice" class="form-control" />
             <span asp-validation-for="book.ListedPrice" class="text-danger"></span>
         </div>
 
@@ -55,7 +55,7 @@
 
        
         <div class="col-12">
-        <button type="submit" class="btn btn-outline-success" style="width:150px">Create</button>
+        <button type="submit" onclick="return ValidateInput()" class="btn btn-outline-success" style="width:150px">Create</button>
         <a asp-controller="Books" asp-action="Index" class="btn btn-secondary" style="width:150px">
             Back to List
             </a>
@@ -65,11 +65,25 @@
 @section Scripts
 {
   @{
-      <partial name="_ValidationScriptsPartial" />  
+    <partial name="_ValidationScriptsPartial" />  
    }
       <script>
        $(document).ready(function () {
        $('.js-example-basic-multiple').select2();
          });
-       </script>    
+       </script> 
+       <script>
+           function ValidateInput() {
+               if (document.getElementById("authPrice").value < 1 || document.getElementById("Price").value< 1) {
+                   Swal.fire({
+                       icon: 'error',
+                       title: 'Invalid...',
+                       text: 'Author and listed price should be greater than 0',
+                   });
+                   return false;
+               }
+               return true;
+           }
+      
+       </script>
 }
