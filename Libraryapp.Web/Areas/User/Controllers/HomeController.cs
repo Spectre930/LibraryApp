@@ -14,12 +14,21 @@ namespace LibraryApp.Web.Areas.User.Controllers
             _httpClient = httpClient;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-           
+
 
             return View();
         }
+
+        public IActionResult Logout()
+        {
+
+
+            return RedirectToAction("Index", "Home");
+        }
+
+
 
         public IActionResult Privacy()
         {

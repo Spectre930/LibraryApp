@@ -7,10 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\vendors\**" />
+    <Content Remove="wwwroot\vendors\**" />
+    <EmbeddedResource Remove="wwwroot\vendors\**" />
+    <None Remove="wwwroot\vendors\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\LibraryApp.Models\LibraryApp.Models.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.10" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 

@@ -1,95 +1,133 @@
 ﻿@model IEnumerable<LibraryApp.Models.ViewModels.BooksIndexVM>
 
 <partial name="_Notification" />
-<div class="container p-3">
-    <div class="row pt-4">
-        <div class="col-6">
-            <h2 class="text-primary">Books List</h2>
-        </div>
-        <div class="col-6 text-end">
-            <a asp-controller="Books" asp-action="Create" class="btn btn-success">
-                <i class="bi bi-plus-circle"></i> &nbsp; Create New Book
-            </a>
-        </div>
-    </div>
-    <br /><br />
 
-    <table class="table  table-hover align-items-center" style="width:100%">
-    <thead>
-            <tr class="table-secondary">
-                <th>
-                     Title
-                </th>
-                <th>
-                    Description
-                </th>
-                <th>
-                     Genre
-                </th>
-                <th>
-                     Copies
-                </th>
-                <th>
-                    Available Copies
-                </th>
-                <th>
-                    Author Price
-                </th>
-                <th>
-                    Listed Price
-                </th>
-                <th> </th>
-                <th></th>
-            </tr>
-    </thead>
-
-        <tbody class="table-group-divider ">
-        @foreach(var obj in Model)
-        {
-                <tr class="">
-               <td>
-                   @obj.book.Title
-               </td>
-                    <td>
-                        @obj.book.Description
-                    </td>
-                    <td>
-                        @obj.book.Genre.Name
-                    </td>
-                    <td>
-                        @obj.book.Copies
-                    </td>
-                    <td>
-                        @obj.book.AvailableCopies
-                    </td>
-                    <td>
-                        @obj.book.AuthPrice
-                    </td>
-                    <td>
-                        @obj.book.ListedPrice
-                    </td>
-                    <td>
-                        <div class="dropdown">
-                            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Authors
-                            </button>
-                            <ul class="dropdown-menu">
-                               @foreach(var a in obj.authors)
-                               {     
-                                <li class="m-1">@a</li>
-                               }
-                            </ul>
+<div class="container p-3 justirfy-content-center">
+    <div class="row justirfy-content-center">
+        <!-- Content Wrapper. Contains page content -->
+        <div class="">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="text-white">Books List</h1>
                         </div>
-                    </td>
-                    <td class="align-items-center">
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item">
+                                    <a asp-controller="Books" asp-action="Create" class="btn btn-success">
+                                        <i class="bi bi-plus-circle"></i> &nbsp; Create New Book
+                                    </a>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div><!-- /.container-fluid -->
+            </section>
 
-                        <a asp-controller="Books" asp-action="Edit" asp-route-id="@obj.book.Id" class="btn btn-outline-warning me-1"><i class="bi bi-pencil-square"></i>Edit</a>
-                        <a asp-controller="Books" asp-action="Delete" asp-route-id="@obj.book.Id" class="btn btn-outline-danger"><i class="bi bi-x-circle"></i>Delete</a>
-                </td>
-           </tr> 
-        }
-    </tbody>
-</table>
+            <!-- Main content -->
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="">
+                            <div class="card">
+                                <!-- /.card-header -->
+                                <div class="card-body">
+                                    <table id="example1" class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr class="table-secondary">
+                                                <th>
+                                                    Title
+                                                </th>
+                                                <th>
+                                                    Description
+                                                </th>
+                                                <th>
+                                                    Genre
+                                                </th>
+                                                <th>
+                                                    Copies
+                                                </th>
+                                                <th>
+                                                    Available Copies
+                                                </th>
+                                                <th>
+                                                    Author Price
+                                                </th>
+                                                <th>
+                                                    Listed Price
+                                                </th>
+                                                <th> Authors</th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody class="table-group-divider ">
+                                            @foreach (var obj in Model)
+                                            {
+                                                <tr class="">
+                                                    <td>
+                                                        @obj.book.Title
+                                                    </td>
+                                                    <td>
+                                                        @obj.book.Description
+                                                    </td>
+                                                    <td>
+                                                        @obj.book.Genre.Name
+                                                    </td>
+                                                    <td>
+                                                        @obj.book.Copies
+                                                    </td>
+                                                    <td>
+                                                        @obj.book.AvailableCopies
+                                                    </td>
+                                                    <td>
+                                                        @obj.book.AuthPrice
+                                                    </td>
+                                                    <td>
+                                                        @obj.book.ListedPrice
+                                                    </td>
+                                                    <td>
+                                                        <div class="dropdown">
+                                                            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                Authors
+                                                            </button>
+                                                            <ul class="dropdown-menu">
+                                                                @foreach (var a in obj.authors)
+                                                                {
+                                                                    <li class="m-1">@a</li>
+                                                                }
+                                                            </ul>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+
+                                                        <a asp-controller="Books" asp-action="Edit" asp-route-id="@obj.book.Id" class="btn btn-outline-warning"><i class="bi bi-pencil-square"></i>Edit</a>
+                                                    </td>
+                                                    <td>
+                                                        <a asp-controller="Books" asp-action="Delete" asp-route-id="@obj.book.Id" class="btn btn-outline-danger"><i class="bi bi-x-circle"></i>Delete</a>
+
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+
+                                    </table>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                            <!-- /.card -->
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.container-fluid -->
+            </section>
+            <!-- /.content -->
+        </div>
+
+    </div>
 </div>
-
-

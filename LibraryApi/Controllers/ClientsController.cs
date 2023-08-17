@@ -1,7 +1,9 @@
-﻿using LibraryApp.DataAccess.AuthenticationRepository.IAuthenticationRepository;
+﻿using Humanizer;
+using LibraryApp.DataAccess.AuthenticationRepository.IAuthenticationRepository;
 using LibraryApp.DataAccess.Repository.IRepository;
 using LibraryApp.Models.DTO;
 using LibraryApp.Models.Models;
+using LibraryApp.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -65,13 +67,20 @@ namespace LibraryApi.Controllers
         [HttpPost]
         [Route("create")]
         [ProducesResponseType(typeof(Clients), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Create(ClientsDto client)
+        public async Task<IActionResult> Create(ClientsDto dto)
         {
 
+            try
+            {
+                var client = await _authUnitOfWork.Clients.Register(dto);
+                return Ok(client);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
-            var user = await _unitOfWork.Clients.CreateClientAsync(client);
 
-            return Ok(user);
         }
 
         [HttpPut]
@@ -107,27 +116,6 @@ namespace LibraryApi.Controllers
 
 
             return NoContent();
-        }
-
-        [HttpPost]
-        [Route("register")]
-        [ProducesResponseType(typeof(Clients), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Register(ClientsDto dto)
-        {
-            var client = await _authUnitOfWork.Clients.Register(dto);
-
-            return Ok(client);
-        }
-
-        [HttpGet]
-        [Route("login")]
-        [ProducesResponseType(typeof(Clients), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> login(string email, string password)
-        {
-            var client = await _authUnitOfWork.Clients.Login(email, password);
-
-            return Ok(client);
         }
 
     }

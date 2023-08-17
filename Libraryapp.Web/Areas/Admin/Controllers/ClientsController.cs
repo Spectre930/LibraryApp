@@ -31,11 +31,20 @@ public class ClientsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(ClientsDto client)
     {
+        try
+        {
+            await _UnitOfWorkHttp.Clients.CreateClient(client);
 
-        await _UnitOfWorkHttp.Clients.CreateClient(client);
+            TempData["success"] = "Client Created Successfully";
+            return RedirectToAction("Index");
+        }
+        catch (Exception ex)
+        {
+            if (ex is HttpRequestException)
+                ViewBag.Message = ex.Message;
+            return View();
+        }
 
-        TempData["success"] = "Client Created Successfully";
-        return RedirectToAction("Index");
     }
 
     [HttpGet]
@@ -52,10 +61,19 @@ public class ClientsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(Clients client)
     {
+        try
+        {
+            await _UnitOfWorkHttp.Clients.UpdateClientAsync(client);
+            TempData["success"] = "Client Updated Successfully";
+            return RedirectToAction("Index");
+        }
+        catch (Exception ex)
+        {
 
-        await _UnitOfWorkHttp.Clients.UpdateClientAsync(client);
-        TempData["success"] = "Client Updated Successfully";
-        return RedirectToAction("Index");
+            ViewBag.Message = "error occured while editing please try again!";
+            return View();
+        }
+
     }
 
     public async Task<IActionResult> Delete(int id)
@@ -69,9 +87,20 @@ public class ClientsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeletePOST(int id)
     {
-        await _UnitOfWorkHttp.Clients.DeleteAsync("Clients", id);
-        TempData["success"] = "Client Deleted Successfully";
-        return RedirectToAction("Index");
+        try
+        {
+            await _UnitOfWorkHttp.Clients.DeleteAsync("Clients", id);
+            TempData["success"] = "Client Deleted Successfully";
+            return RedirectToAction("Index");
+        }
+        catch (Exception ex)
+        {
+
+            ViewBag.Message = "error occured while deleting please try again!";
+
+            return View();
+        }
+
     }
 
 }

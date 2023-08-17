@@ -2,7 +2,7 @@
 using LibraryApp.DataAccess.Repository.IRepository;
 using LibraryApp.Models.DTO;
 using LibraryApp.Models.Models;
-using Microsoft.AspNetCore.Mvc;
+using LibraryApp.Models.ViewModels;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -31,15 +31,14 @@ public class ClientAuthentication : IClientAuthentication
         return false;
     }
 
-    public async Task<string> Login(string email, string password)
+    public async Task<string> Login(LoginVM loginUser)
     {
-        var client = await _unitOfWork.Clients.GetFirstOrDefaultAsync(x => x.Email == email, new string[] { "Roles" });
+        var client = await _unitOfWork.Clients.GetFirstOrDefaultAsync(x => x.Email == loginUser.email, new string[] { "Roles" });
 
-        if (client == null)
-            throw new Exception("User not found");
+        if (client == null || !VerifyPassword(loginUser.password, client.PasswordHash, client.PasswordSalt))
+            throw new Exception("incorrect email or password");
 
-        if (!VerifyPassword(password, client.PasswordHash, client.PasswordSalt))
-            throw new Exception("Incorrect Password!");
+
 
         var token = CreateToken(client);
         return token;
@@ -67,7 +66,7 @@ public class ClientAuthentication : IClientAuthentication
 
     private bool VerifyPassword(string password, byte[] passwordHash, byte[] passwordSalt)
     {
-        using (var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt))
+        using (var hmac = new HMACSHA512(passwordSalt))
         {
             var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password)); // Create hash using password salt.
             for (int i = 0; i < computedHash.Length; i++)
@@ -91,13 +90,13 @@ public class ClientAuthentication : IClientAuthentication
     {
         var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.UserData, client.Id.ToString()),
+            new Claim(ClaimTypes.NameIdentifier, client.Id.ToString()),
             new Claim(ClaimTypes.Email, client.Email),
             new Claim(ClaimTypes.Role, client.Roles.Role),
         };
 
         var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
-            _configuration.GetSection("JWT:Token").Value));
+            _configuration.GetSection("JWT:Token").Value!));
 
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 

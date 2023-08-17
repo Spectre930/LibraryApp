@@ -1,5 +1,7 @@
 using LibraryApp.Web.Repository;
 using LibraryApp.Web.Repository.IRepository;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,23 @@ builder.Services.AddHttpClient<IUnitOfWorkHttp, UnitOfWorkHttp>(c =>
 {
     c.DefaultRequestHeaders.Add("Accept", "application/json");
 });
+
+//builder.Services.AddAuthentication("Bearer")
+//       .AddJwtBearer(options =>
+//       {
+//           options.TokenValidationParameters = new TokenValidationParameters
+//           {
+//               ValidateIssuerSigningKey = true,
+//               ValidateIssuer = false,
+//               ValidateAudience = false,
+//               IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
+//             builder.Configuration.GetSection("JWT:Token").Value!))
+//           };
+//       });
+
+//builder.Services.AddAuthorization();
+
+
 var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -24,6 +43,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

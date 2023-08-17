@@ -1,15 +1,15 @@
-﻿using LibraryApp.DataAccess;
-using LibraryApp.DataAccess.Repository.IRepository;
+﻿using LibraryApp.DataAccess.Repository.IRepository;
 using LibraryApp.Models.DTO;
 using LibraryApp.Models.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
+
 
 namespace LibraryApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize(Roles = "Admin,Employee")]
     public class BooksController : ControllerBase
     {
 

@@ -2,6 +2,7 @@
 using LibraryApp.DataAccess.Repository.IRepository;
 using LibraryApp.Models.DTO;
 using LibraryApp.Models.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -9,6 +10,7 @@ namespace LibraryApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+//[Authorize(Roles = "Admin")]
 public class EmployeesController : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork;
@@ -49,12 +51,18 @@ public class EmployeesController : ControllerBase
     [ProducesResponseType(typeof(Employees), StatusCodes.Status200OK)]
     public async Task<IActionResult> Create(EmployeesDto emp)
     {
+        try
+        {
 
-        var employee = await _unitOfWork.Employees.CreateEmployee(emp);
-        await _unitOfWork.Employees.AddAsync(employee);
-        await _unitOfWork.SaveAsync();
+            var employee = await _authUnitOfWork.Employee.Register(emp);
 
-        return Ok("Created");
+            return Ok(employee);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+
     }
 
     [HttpPut]
@@ -90,25 +98,6 @@ public class EmployeesController : ControllerBase
         return NoContent();
     }
 
-    [HttpPost]
-    [Route("register")]
-    [ProducesResponseType(typeof(Employees), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Register(EmployeesDto emp)
-    {
-        var employee = await _authUnitOfWork.Employee.Register(emp);
 
-        return Ok(employee);
-    }
-
-    [HttpGet]
-    [Route("login")]
-    [ProducesResponseType(typeof(Employees), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> login(string email, string password)
-    {
-        var employeeToken = await _authUnitOfWork.Employee.Login(email, password);
-
-        return Ok(employeeToken);
-    }
 
 }

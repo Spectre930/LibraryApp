@@ -1,0 +1,10 @@
+﻿body {
+    /* The image used */
+    background-image: url("../dist/img/shelf.jpg");
+    /* Half height */
+    height: 100%;
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}

@@ -1,9 +1,7 @@
-﻿using LibraryApp.Models.ViewModels;
+﻿using LibraryApp.Models.Models;
+using LibraryApp.Models.ViewModels;
 using LibraryApp.Web.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
-
-
-
 namespace LibraryApp.Web.Areas.Admin.Controllers;
 
 public class BooksController : Controller
@@ -37,9 +35,20 @@ public class BooksController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(BooksVM bookVM, List<int> selectedOptions)
     {
-        await _UnitOfWorkHttp.Books.PostCreatedBook(bookVM, selectedOptions);
-        TempData["success"] = "Book Created Successfully";
-        return RedirectToAction("Index");
+        try
+        {
+            await _UnitOfWorkHttp.Books.PostCreatedBook(bookVM, selectedOptions);
+            TempData["success"] = "Book Created Successfully";
+            return RedirectToAction("Index");
+
+        }
+        catch (Exception ex)
+        {
+            if (ex is HttpRequestException)
+                ViewBag.Message = ex.Message;
+            return View();
+        }
+
     }
 
     [HttpGet]
@@ -48,16 +57,23 @@ public class BooksController : Controller
         var genres = await _UnitOfWorkHttp.Genres.GetAllAsync("Genres");
         var ResObject = await _UnitOfWorkHttp.Books.GetEditBook(id, genres);
         return View(ResObject);
-    }
 
+    }
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(BooksEditVM bookVM)
     {
-
-        await _UnitOfWorkHttp.Books.UpdateBookAsync(bookVM);
-        TempData["success"] = "Book Updated Successfully";
-        return RedirectToAction("Index");
+        try
+        {
+            await _UnitOfWorkHttp.Books.UpdateBookAsync(bookVM);
+            TempData["success"] = "Book Updated Successfully";
+            return RedirectToAction("Index");
+        }
+        catch (Exception ex)
+        {
+            ViewBag.Message = "error occured while editing please try again!";
+            return View();
+        }
     }
 
     public async Task<IActionResult> Delete(int id)
@@ -71,8 +87,17 @@ public class BooksController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeletePOST(BooksIndexVM bookVM)
     {
-        await _UnitOfWorkHttp.Books.DeleteAsync("Books", bookVM.book.Id);
-        TempData["success"] = "Book Deleted Successfully";
-        return RedirectToAction("Index");
+        try
+        {
+            await _UnitOfWorkHttp.Books.DeleteAsync("Books", bookVM.book.Id);
+            TempData["success"] = "Book Deleted Successfully";
+            return RedirectToAction("Index");
+        }
+        catch (Exception ex)
+        {
+            ViewBag.Message = "error occured while deleting please try again!";
+            return View();
+        }
+
     }
 }

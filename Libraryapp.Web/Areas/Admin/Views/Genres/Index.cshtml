@@ -1,43 +1,81 @@
 ﻿@model IEnumerable<Genres>
 
 <partial name="_Notification" />
-<div class="container p-3">
-    <div class="row pt-4">
-        <div class="col-6">
-            <h2 class="text-primary">Genres List</h2>
+
+<div class="container p-3 justirfy-content-center">
+    <div class="row justirfy-content-center">
+        <!-- Content Wrapper. Contains page content -->
+        <div class="">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="text-white">Genres List</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item">
+                                    <a asp-controller="Genres" asp-action="Create" class="btn btn-success">
+                                        <i class="bi bi-plus-circle"></i> &nbsp; Create New Genre
+                                    </a>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div><!-- /.container-fluid -->
+            </section>
+
+            <!-- Main content -->
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="">
+                            <div class="card">
+                                <!-- /.card-header -->
+                                <div class="card-body">
+                                    <table id="example1" class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    Genre Name
+                                                </th>
+                                                <th></th>
+                                                <th></th>
+
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                            @foreach (var obj in Model)
+                                            {
+                                                <tr>
+                                                    <td >
+                                                        @obj.Name
+                                                    </td>
+                                                    <td>
+                                                        <a asp-controller="Genres" asp-action="Edit" asp-route-id="@obj.Id" class="btn btn-warning "><i class="bi bi-pencil-square"></i> Edit</a>
+                                                    </td>
+                                                    <td>
+                                                        <a asp-controller="Genres" asp-action="Delete" asp-route-id="@obj.Id" class="btn btn-danger "><i class="bi bi-x-circle"></i> Delete</a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                            <!-- /.card -->
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.container-fluid -->
+            </section>
+            <!-- /.content -->
         </div>
-        <div class="col-6 text-end">
-            <a asp-controller="Genres" asp-action="Create" class="btn btn-success">
-                <i class="bi bi-plus-circle"></i> &nbsp; Create New Genre
-            </a>
-        </div>
+
     </div>
-    <br /><br />
-
-<table class="table table-bordered table-striped" style="width:100%">
-    <thead>
-            <tr>
-                <th>
-                    Genre Name
-                </th>
-            </tr>
-    </thead>
-
-    <tbody>
-        @foreach(var obj in Model)
-        {
-           <tr>
-               <td width="50%">
-                   @obj.Name
-               </td>
-                    <td width="50%">
-                   
-                            <a asp-controller="Genres" asp-action="Edit" asp-route-id="@obj.Id" class="btn btn-warning mx-1"><i class="bi bi-pencil-square"></i>Edit</a>
-                                 <a asp-controller="Genres" asp-action="Delete" asp-route-id="@obj.Id" class="btn btn-danger mx-1"><i class="bi bi-x-circle"></i>Delete</a>
-           </tr> 
-        }
-    </tbody>
-</table>
 </div>
-
-

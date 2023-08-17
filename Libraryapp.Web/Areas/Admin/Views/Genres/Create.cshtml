@@ -1,9 +1,9 @@
 ﻿@model Genres
 
 <form method="post">
-    <div class="border p-3 mt-4 row">
+    <div class="border p-3 mt-4 row bg-light rounded">
         <div class="row pb-2">
-            <h2 class="text-bg-success">Create Genre</h2>
+            <h2 class="bg-success">Create Genre</h2>
             <hr />
         </div>
         @*<div asp-validation-summary="All"></div>*@
@@ -11,13 +11,22 @@
             <label asp-for="Name">Genre Name</label>
             <input asp-for="Name" class="form-control" />
             <span asp-validation-for="Name" class="text-danger"></span>
-       
+       </div>
         <div class="col-12">
         <button type="submit" class="btn btn-success" style="width:150px">Create</button>
         <a asp-controller="Genres" asp-action="Index" class="btn btn-secondary" style="width:150px">
             Back to List
             </a>
         </div>
+        @if (ViewBag.Message != null)
+        {
+            <div class="alert  alert-danger alert-dismissible fade show" style="font-size:smaller; width:60% ;" role="alert">
+                @ViewBag.Message
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        }
     </div>
 </form>
 

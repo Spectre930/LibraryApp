@@ -5,7 +5,6 @@ using LibraryApp.Web.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
 
 
-
 namespace LibraryApp.Web.Areas.Admin.Controllers;
 
 public class EmployeesController : Controller
@@ -34,9 +33,19 @@ public class EmployeesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(EmployeesDto emp)
     {
-        await _UnitOfWorkHttp.Employees.CreateEmployee(emp);
-        TempData["success"] = "Employee Created Successfully";
-        return RedirectToAction("Index");
+        try
+        {
+            await _UnitOfWorkHttp.Employees.CreateEmployee(emp);
+            TempData["success"] = "Employee Created Successfully";
+            return RedirectToAction("Index");
+        }
+        catch (Exception ex)
+        {
+            if (ex is HttpRequestException)
+                ViewBag.Message = ex.Message;
+            return View();
+        }
+
     }
 
     [HttpGet]
@@ -50,9 +59,19 @@ public class EmployeesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(Employees employee)
     {
-        await _UnitOfWorkHttp.Employees.UpdatePostAsync("Employees", employee, employee.Id);
-        TempData["success"] = "Employee Updated Successfully";
-        return RedirectToAction("Index");
+        try
+        {
+            await _UnitOfWorkHttp.Employees.UpdatePostAsync("Employees", employee, employee.Id);
+            TempData["success"] = "Employee Updated Successfully";
+            return RedirectToAction("Index");
+        }
+        catch (Exception ex)
+        {
+            //if (ex is HttpRequestException)
+            ViewBag.Message = ex.Message;
+            return View();
+        }
+
     }
 
     public async Task<IActionResult> Delete(int id)
@@ -65,8 +84,41 @@ public class EmployeesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeletePOST(int id)
     {
-        await _UnitOfWorkHttp.Employees.DeleteAsync("Employees", id);
-        TempData["success"] = "Employee Deleted Successfully";
-        return RedirectToAction("Index");
+        try
+        {
+            await _UnitOfWorkHttp.Employees.DeleteAsync("Employees", id);
+            TempData["success"] = "Employee Deleted Successfully";
+            return RedirectToAction("Index");
+
+        }
+        catch (Exception ex)
+        {
+            //if (ex is HttpRequestException)
+            ViewBag.Message = ex.Message;
+            return View();
+        }
+    }
+
+    [HttpGet]
+    public IActionResult Login()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Login(LoginVM vm)
+    {
+        try
+        {
+            await _UnitOfWorkHttp.Employees.Login(vm);
+            return RedirectToAction("Index", "EmpHome", new { area = "Admin" });
+        }
+        catch (Exception ex)
+        {
+            if (ex is HttpRequestException)
+                ViewBag.Message = ex.Message;
+            return View();
+        }
     }
 }

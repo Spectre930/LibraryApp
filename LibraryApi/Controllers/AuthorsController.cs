@@ -1,14 +1,14 @@
-﻿using LibraryApp.DataAccess;
-using LibraryApp.DataAccess.Repository.IRepository;
+﻿using LibraryApp.DataAccess.Repository.IRepository;
 using LibraryApp.Models.Models;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace LibraryApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize(Roles = "Admin,Employee")]
     public class AuthorsController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;

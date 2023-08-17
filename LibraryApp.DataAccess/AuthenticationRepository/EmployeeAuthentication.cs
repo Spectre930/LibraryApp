@@ -2,6 +2,7 @@
 using LibraryApp.DataAccess.Repository.IRepository;
 using LibraryApp.Models.DTO;
 using LibraryApp.Models.Models;
+using LibraryApp.Models.ViewModels;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -30,15 +31,13 @@ public class EmployeeAuthentication : IEmployeeAuthentication
         return false;
     }
 
-    public async Task<string> Login(string email, string password)
+    public async Task<string> Login(LoginVM empLogin)
     {
-        var employee = await _unitOfWork.Employees.GetFirstOrDefaultAsync(x => x.Email == email, new string[] { "Role" });
+        var employee = await _unitOfWork.Employees.GetFirstOrDefaultAsync(x => x.Email == empLogin.email, new string[] { "Role" });
 
-        if (employee == null)
-            throw new Exception("Employee not found");
+        if (employee == null || !VerifyPassword(empLogin.password, employee.PasswordHash, employee.PasswordSalt))
+            throw new Exception("incorrect email or password");
 
-        if (!VerifyPassword(password, employee.PasswordHash, employee.PasswordSalt))
-            throw new Exception("Incorrect Password!");
         var token = CreateToken(employee);
 
         return token;
@@ -90,13 +89,13 @@ public class EmployeeAuthentication : IEmployeeAuthentication
     {
         var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.UserData, employee.Id.ToString()),
+            new Claim(ClaimTypes.NameIdentifier, employee.Id.ToString()),
             new Claim(ClaimTypes.Email, employee.Email),
             new Claim(ClaimTypes.Role, employee.Role.Role),
         };
 
         var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
-            _configuration.GetSection("JWT:Token").Value));
+            _configuration.GetSection("JWT:Token").Value!));
 
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 

@@ -2,9 +2,9 @@
 
 <form method="post" asp-action="Edit">
     <input asp-for="Id" hidden class="form-control" />
-    <div class="border p-3 mt-4 row">
+    <div class="border p-3 mt-4 row  bg-light rounded ">
         <div class="row pb-2">
-            <h2 class="text-bg-warning">Edit Employee</h2>
+            <h2 class="rounded bg-warning">Edit Employee</h2>
             <hr />
         </div>
         <div class="mb-3 col-6">
@@ -34,7 +34,13 @@
             <input asp-for="PhoneNumber" class="form-control" />
             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
         </div>
-
+        @if (ViewBag.Message != null)
+        {
+            <div class="alert  alert-danger" style="font-size:smaller; width:60% ;" role="alert">
+                @ViewBag.Message
+               
+            </div>
+        }
         <div class="col-12">
             <button type="submit" class="btn btn-warning" style="width:150px">Update</button>
             <a asp-controller="Employees" asp-action="Index" class="btn btn-secondary" style="width:150px">

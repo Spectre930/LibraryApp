@@ -16,7 +16,25 @@ namespace LibraryApp.Web.Repository
 
         public async Task CreateEmployee(EmployeesDto emp)
         {
-            await _client.PostAsJsonAsync("Employees/create", emp);
+            var response = await _client.PostAsJsonAsync("Employees/create", emp);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception(response.Content.ReadAsStringAsync().Result);
+            }
+
+        }
+
+        public async Task<string> Login(LoginVM vm)
+        {
+            var response = await _client.PostAsJsonAsync("employee/login", vm);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseStream = response.Content.ReadAsStringAsync().Result;
+                return responseStream;
+            }
+
+            throw new Exception(response.Content.ReadAsStringAsync().Result);
         }
     }
 }

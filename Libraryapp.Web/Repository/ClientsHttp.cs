@@ -1,10 +1,12 @@
 ﻿using LibraryApp.Models.DTO;
 using LibraryApp.Models.Models;
+using LibraryApp.Models.ViewModels;
 using LibraryApp.Web.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Text;
+using static System.Net.WebRequestMethods;
 
 namespace LibraryApp.Web.Repository;
 
@@ -17,10 +19,28 @@ public class ClientsHttp : RepositoryHttp<Clients>, IClientsHttp
         _client = client;
     }
 
+    public async Task<string> ClientLogin(LoginVM userLogin)
+    {
+        var response = await _client.PostAsJsonAsync("user/login", userLogin);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var responseStream = response.Content.ReadAsStringAsync().Result;
+            return responseStream;
+        }
+
+        throw new Exception(response.Content.ReadAsStringAsync().Result);
+    }
+
     public async Task CreateClient(ClientsDto client)
     {
-        client.RolesId = 2;
-        await _client.PostAsJsonAsync("Clients/create", client);
+        //client.RolesId = 2;
+        var response = await _client.PostAsJsonAsync("Clients/create", client);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(response.Content.ReadAsStringAsync().Result);
+        }
     }
 
     public async Task UpdateClientAsync(Clients client)

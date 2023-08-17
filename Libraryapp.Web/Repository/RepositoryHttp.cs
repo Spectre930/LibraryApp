@@ -40,6 +40,7 @@ public class RepositoryHttp<T> : IRepositoryHttp<T> where T : class
 
     public async Task CreatePostAsync(string controller, T entity)
     {
+
         await _client.PostAsJsonAsync($"{controller}/create", entity);
     }
 
