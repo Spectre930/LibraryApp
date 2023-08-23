@@ -1,0 +1,37 @@
+﻿@model IEnumerable<LibraryApp.Models.ViewModels.BooksIndexVM>
+<partial name="_Notification" />
+
+<div class="row pb-3 justify-content-center pt-5">
+    @foreach (var obj in Model)
+    {
+        <div class="col-lg-3 col-md-6">
+            <div class="row p-2 px-2">
+                <div class="col-12 p-1 bg-white" style="border:2px solid white; border-radius:5px;">
+                    <div class="card">
+                        @* <img src="@obj.ImageUrl" class="card-img-top rounded" /> *@
+                        <div class="card-body">
+                            <div class="pl-1 row">
+                                <h5 class="card-title h5 text-black">@obj.book.Title.ToUpper()</h5>
+                                <p class="card-title  text-warning mt-2">
+                                    @{
+                                        var auths = String.Join(", ", @obj.authors);
+                                    }
+                                    <small>by  @auths</small>
+                                </p>
+
+                            </div>
+                            <div class="pl-2 mt-2">
+                                <p> Price:<b> @obj.book.ListedPrice.ToString("c")</b></p>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div>
+                        <a  class="btn btn-primary form-control" asp-controller="UserBooks" asp-action="Details" asp-route-id="@obj.book.Id">Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+   
+</div>

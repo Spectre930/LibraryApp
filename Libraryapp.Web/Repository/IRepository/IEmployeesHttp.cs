@@ -7,6 +7,6 @@ namespace LibraryApp.Web.Repository.IRepository
     public interface IEmployeesHttp : IRepositoryHttp<Employees>
     {
         Task CreateEmployee(EmployeesDto emp);
-        Task<string> Login(LoginVM vm);
+        Task<bool> Login(LoginVM vm);
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace LibraryApp.Web.Repository.IRepository;
+﻿using LibraryApp.Models.Models;
+
+namespace LibraryApp.Web.Repository.IRepository;
 
 public interface IRepositoryHttp<T> where T : class
 {
@@ -7,5 +9,8 @@ public interface IRepositoryHttp<T> where T : class
     Task UpdatePostAsync(string controller, T entity, int entityId);
     Task DeleteAsync(string controller, int id);
     Task CreatePostAsync(string controller, T entity);
+
+    User GetClaims();
+    Task StoreToken(HttpResponseMessage response);
 
 }

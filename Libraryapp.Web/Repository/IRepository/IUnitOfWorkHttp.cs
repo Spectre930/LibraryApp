@@ -9,4 +9,5 @@ public interface IUnitOfWorkHttp
     IEmployeesHttp Employees { get; }
     IRepositoryHttp<Authors> Authors { get; }
     IRepositoryHttp<Genres> Genres { get; }
+    void Logout();
 }

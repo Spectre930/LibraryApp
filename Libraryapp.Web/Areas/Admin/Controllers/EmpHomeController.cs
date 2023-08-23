@@ -6,18 +6,14 @@ namespace LibraryApp.Web.Areas.Admin.Controllers;
 
 public class EmpHomeController : Controller
 {
-    private readonly ILogger<EmpHomeController> _logger;
-    private readonly HttpClient _httpClient;
-    public EmpHomeController(ILogger<EmpHomeController> logger, HttpClient httpClient)
+
+    public EmpHomeController()
     {
-        _logger = logger;
-        _httpClient = httpClient;
+
     }
 
     public IActionResult Index()
     {
-
-
         return View();
     }
 

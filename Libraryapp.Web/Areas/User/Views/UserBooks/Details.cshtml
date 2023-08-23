@@ -1,0 +1,86 @@
+﻿@model LibraryApp.Models.ViewModels.BooksIndexVM
+
+@{
+    var auths = String.Join(", ", Model.authors); 
+}
+
+
+   
+    <div class="card shadow border-0 mt-4">
+        <div class="card-header bg-black bg-gradient text-light py-4">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h3 class="text-white text-uppercase">@Model.book.Title</h3>
+                    <p class="text-white-50 fw-semibold mb-0">by @auths</p>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="py-3">
+                <div class="row">
+                    <div class="col-6 col-md-2 offset-lg-1 pb-1">
+                        <a asp-action="Index" class="btn btn-outline-primary bg-gradient mb-5 fw-semibold btn-sm text-uppercase">
+                            Back to home
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12 col-lg-3 offset-lg-1 text-center mb-3">
+                        <img src="~/dist/img/book.jpg" width="100%" class="rounded" />
+                    </div>
+                    <div class="col-12 col-lg-6 offset-lg-1">
+
+                       
+                        <div class="row  ps-2">
+                            <h5 class="text-dark text-opacity-50 ">Genre :  @Model.book.Genre.Name</h5>
+                        </div>
+                        <div class="row text-center ps-2">
+                            <div class="p-1 col-3 col-lg-2 bg-white border-bottom">
+                                <div class="text-dark text-opacity-50 fw-semibold">Quantity:</div>
+                            </div>
+                            <div class="p-1 col-3 col-lg-2 bg-white border-bottom">
+                                <div class="text-dark text-opacity-50 fw-semibold">@Model.book.AvailableCopies</div>
+                            </div>
+                            
+                        </div>
+                        <div class="row text-center ps-2">
+                            <div class="p-1 col-3 col-lg-2 bg-white text-warning fw-bold">
+                                <div>Price</div>
+                            </div>
+                            <div class="p-1 col-3 col-lg-2 bg-white text-warning fw-bold">
+                                <div> @Model.book.ListedPrice.ToString("c")</div>
+                            </div>
+                        </div>
+                        <div class="row pl-2 my-3">
+                            <p class="text-secondary lh-sm">Description: <br />  @Model.book.Description</p>
+                        </div>
+                        <div class="row pl-2 mb-3">
+                            <div class="col-12 col-md-6">
+                                <div class="input-group mb-3">
+                                    <a class="btn btn-success bg-gradient  w-100 py-2 text-uppercase text-light fw-semibold" asp-controller="UserBooks" asp-action="Purchase" asp-route-id="@Model.book.Id">
+                                        BUY BOOK
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row pl-2">
+                            <div class="col-12  col-md-6 pb-1">
+
+                                <form method="post" asp-controller="UserBooks" asp-action="Borrow" asp-route-id="@Model.book.Id">
+                                <input asp-for="@Model.book.Id" hidden class="form-control"  name="bookId"/>
+                            <button  
+                                        class="btn btn-warning bg-gradient  w-100 py-2 text-uppercase text-light fw-semibold">
+                                   Borrow Book
+                                </button>
+
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+

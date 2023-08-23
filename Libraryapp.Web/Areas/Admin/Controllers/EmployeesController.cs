@@ -112,6 +112,7 @@ public class EmployeesController : Controller
         try
         {
             await _UnitOfWorkHttp.Employees.Login(vm);
+            TempData["Role"] = _UnitOfWorkHttp.Employees.GetClaims().role;
             return RedirectToAction("Index", "EmpHome", new { area = "Admin" });
         }
         catch (Exception ex)

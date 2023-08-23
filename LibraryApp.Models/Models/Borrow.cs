@@ -7,13 +7,13 @@ namespace LibraryApp.Models.Models;
 public class Borrow
 {
     [Key]
-    public int Id { get; set; } 
-    
+    public int Id { get; set; }
+
     [Required]
     public int BookId { get; set; }
     public Books Book { get; set; }
 
-    
+
     [Required]
     public int ClientId { get; set; }
     public Clients Client { get; set; }
@@ -25,4 +25,5 @@ public class Borrow
     [AllowNull]
     public float LateReturnFee { get; set; }
 
+    public bool returned { get; set; } = false;
 }

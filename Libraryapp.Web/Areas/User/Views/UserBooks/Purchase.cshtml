@@ -1,0 +1,54 @@
+﻿@model LibraryApp.Models.ViewModels.PurchaseVM
+
+<form method="post" asp-action="Purchase">
+    <input asp-for="@Model.book.book" hidden class="form-control" />
+    <input asp-for="@Model.book.book.Id" hidden class="form-control" />
+    <input asp-for="@Model.book.authors" hidden class="form-control" />
+    <input asp-for="@Model.book" hidden class="form-control" />
+
+    <div class="border p-3 mt-4 row rounded bg-light">
+        <div class="row pb-2">
+            <h2 class="text-light bg-success rounded">Purchase </h2>
+            <hr />
+        </div>
+        <div class="mb-3 col-6">
+            <label >Available Copies</label>
+            <input value="@Model.book.book.AvailableCopies" class="form-control disabled" id="copies" />
+        </div>
+
+        <div class="mb-3 col-6">
+            <label asp-for="quantity">Quantity</label>
+            <input asp-for="quantity" class="form-control" id="quantity"/>
+            <span asp-validation-for="quantity" class="text-danger"></span>
+        </div>
+
+
+        <div class="col-12">
+            <button type="submit" onclick="return ValidateInput()" class="btn btn-success text-light" style="width:150px">Purchase</button>
+            <a asp-controller="UserBooks" asp-action="Index" class="btn btn-danger" style="width:150px">
+                Cancel
+            </a>
+        </div>
+    </div>
+</form>
+
+@section Scripts
+    {
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+    <script>
+        function ValidateInput() {
+            if (document.getElementById("quantity").value < 1 || document.getElementById("copies").value < document.getElementById("quantity").value) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Invalid...',
+                    text: 'The quantity should be less than the Available Copies and 1 copy minimum',
+                });
+                return false;
+            }
+            return true;
+        }
+
+    </script>
+}

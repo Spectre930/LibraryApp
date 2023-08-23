@@ -1,4 +1,6 @@
 ﻿using LibraryApp.Models.Models;
+using LibraryApp.Web.Repository;
+using LibraryApp.Web.Repository.IRepository;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -6,12 +8,11 @@ namespace LibraryApp.Web.Areas.User.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly HttpClient _httpClient;
-        public HomeController(ILogger<HomeController> logger, HttpClient httpClient)
+        private readonly IUnitOfWorkHttp _unitOfWorkHttp;
+
+        public HomeController(IUnitOfWorkHttp unitOfWorkHttp)
         {
-            _logger = logger;
-            _httpClient = httpClient;
+            _unitOfWorkHttp = unitOfWorkHttp;
         }
 
         public IActionResult Index()
@@ -21,11 +22,24 @@ namespace LibraryApp.Web.Areas.User.Controllers
             return View();
         }
 
+
         public IActionResult Logout()
         {
+            try
+            {
+                _unitOfWorkHttp.Logout();
+                TempData["success"] = "You have been successfully logged out.";
+                ViewBag.status = null;
+                return RedirectToAction("Login", "User", new { area = "User" });
+            }
+            catch (Exception ex)
+            {
+                TempData["error"] = ex.Message;
+                return RedirectToAction("Index", "Home");
+            }
+            // Redirect to another page or login page
 
 
-            return RedirectToAction("Index", "Home");
         }
 
 

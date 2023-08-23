@@ -1,6 +1,8 @@
 using LibraryApp.Web.Repository;
 using LibraryApp.Web.Repository.IRepository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,26 +12,24 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient();
 builder.Services.AddHttpClient<IUnitOfWorkHttp, UnitOfWorkHttp>(c =>
 {
+
     c.DefaultRequestHeaders.Add("Accept", "application/json");
 });
+builder.Services.AddHttpContextAccessor();
+builder.Services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-//builder.Services.AddAuthentication("Bearer")
-//       .AddJwtBearer(options =>
-//       {
-//           options.TokenValidationParameters = new TokenValidationParameters
-//           {
-//               ValidateIssuerSigningKey = true,
-//               ValidateIssuer = false,
-//               ValidateAudience = false,
-//               IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
-//             builder.Configuration.GetSection("JWT:Token").Value!))
-//           };
-//       });
-
-//builder.Services.AddAuthorization();
+builder.Services.AddSession(options =>
+{
+    options.Cookie.Name = "UserSession";
+    options.IdleTimeout = TimeSpan.FromHours(12); // Adjust the timeout as needed
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 
 var app = builder.Build();
+app.UseSession();
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -48,6 +48,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{area=User}/{controller=Home}/{action=Index}/{id?}");
+    pattern: "{area=User}/{controller=User}/{action=Login}/{id?}");
 
 app.Run();

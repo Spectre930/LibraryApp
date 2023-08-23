@@ -32,8 +32,8 @@ public class UserController : Controller
         try
         {
             await _unitOfWorkHttp.Clients.CreateClient(clients);
-            TempData["success"] = "Membership Registered!";
-            return RedirectToAction("Index");
+            TempData["success"] = "Membership Registered, Please Login!";
+            return RedirectToAction("Login");
         }
         catch (Exception ex)
         {
@@ -55,9 +55,9 @@ public class UserController : Controller
     {
         try
         {
-            var token = await _unitOfWorkHttp.Clients.ClientLogin(userLogin);
-
-            return View(token);
+            await _unitOfWorkHttp.Clients.ClientLogin(userLogin);
+            TempData["success"] = "Logged in Seccessfully!";
+            return RedirectToAction("Index", "Home");
         }
         catch (Exception ex)
         {
@@ -65,6 +65,38 @@ public class UserController : Controller
             ViewBag.Message = ex.Message;
             return View();
         }
+    }
+
+    public async Task<IActionResult> Borrows()
+    {
+        var ResObject = await _unitOfWorkHttp.Clients.GetBorrows();
+
+        return View(ResObject);
+
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Return(int id)
+    {
+        try
+        {
+            await _unitOfWorkHttp.Books.ReturnBook(id);
+            return RedirectToAction("Borrows");
+        }
+        catch (Exception ex)
+        {
+            TempData["error"] = ex.Message;
+            return RedirectToAction("Borrows");
+
+        }
+    }
+
+    public async Task<IActionResult> Purchases()
+    {
+        var ResObject = await _unitOfWorkHttp.Clients.GetPurchases();
+
+        return View(ResObject);
+
     }
 
 }

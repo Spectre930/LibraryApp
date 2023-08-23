@@ -18,6 +18,9 @@ public interface IBooksHttp : IRepositoryHttp<Books>
 
     Task UpdateBookAsync(BooksEditVM editVM);
 
+    Task BorrowBook(int boookId);
+    Task ReturnBook(int borrowId);
 
+    Task PurchaseBook(PurchaseVM purchaseVM);
 
 }

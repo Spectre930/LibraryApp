@@ -1,0 +1,131 @@
+﻿@model IEnumerable<Borrow>
+
+<partial name="_Notification" />
+
+<div class="container p-3 justirfy-content-center">
+    <div class="row justirfy-content-center">
+        <!-- Content Wrapper. Contains page content -->
+        <div class="">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="text-white">Borrowed Books</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item">
+                                    <a asp-controller="UserBooks" asp-action="Index" class="btn btn-primary">
+                                       Borrow another Book
+                                    </a>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div><!-- /.container-fluid -->
+            </section>
+
+            <!-- Main content -->
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="">
+                            <div class="card">
+                                <!-- /.card-header -->
+                                <div class="card-body">
+                                    <table id="example1" class="table table-bordered table-hover">
+                                        <thead> 
+                                            <tr>
+                                                <th>
+                                                    
+                                                    Title
+                                                </th>
+                                                <th>
+                                                    Borrow Date
+                                                </th>
+                                                <th>
+                                                    Return Date
+                                                </th>
+                                                <th>
+                                                    Returned
+                                                </th>
+                                                <th>
+                                                   Late Return Fee
+                                                </th>
+                                                <th>
+                                                </th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody class="table-group-divider ">
+                                            @foreach (var obj in Model)
+                                            {
+                                                
+                                                <tr class="">
+                                                    <td>
+                                                        @obj.Book.Title 
+                                                    </td>
+                                                    <td>
+                                                        @obj.BorrowDate
+                                                    </td>
+                                                    <td>
+                                                        @obj.ReturnDate
+                                                    </td>
+                                                    <td>
+                                                        @if (obj.returned)
+                                                        {
+                                                            <p>Yes</p>
+                                                        }
+                                                        else
+                                                        {   
+                                                            <p> No </p>
+                                                        }                                   
+                                                    </td>
+                                                    <td>
+                                                        @obj.LateReturnFee.ToString("c")
+                                                    </td>
+                                                    <td>
+                                                        @if (obj.returned)
+                                                        {
+                                                            <span class="btn btn-outline-warning disabled">Return</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <form method="post" asp-controller="User" asp-action="Return" asp-route-id="@obj.Id">
+                                                                <input asp-for="@obj.Id" hidden class="form-control" />
+                                                                <button class="btn btn-warning">
+                                                                    Return
+                                                                </button>
+                                                            </form>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+
+                                    </table>
+                                    <div class="row mt-2">
+                                        <div class="col-3">
+                                            <button class="btn btn-primary">
+                                                Number of Borrowed <span class="badge bg-secondary">@Model.First().Client.NumberOfBorrowed</span>
+                                            </button>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                            <!-- /.card -->
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.container-fluid -->
+            </section>
+            <!-- /.content -->
+        </div>
+
+    </div>
+</div>

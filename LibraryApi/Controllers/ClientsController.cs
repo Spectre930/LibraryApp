@@ -45,22 +45,21 @@ namespace LibraryApi.Controllers
         }
 
         [HttpGet]
-        [Route("getborrows/id")]
+        [Route("{id}/borrows")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IEnumerable<Borrow>> GetBorrows(int id)
         {
             return await _unitOfWork.Clients.GetBorrowsOfAClient(id);
 
-
         }
 
         [HttpGet]
-        [Route("getpurchases/id")]
+        [Route("{id}/purchases")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IEnumerable<Purchases>> GetPurchases(int id)
         {
-            return await _unitOfWork.Clients.GetPurchasesOfAClient(id);
 
+            return await _unitOfWork.Clients.GetPurchasesOfAClient(id);
 
         }
 
@@ -117,6 +116,7 @@ namespace LibraryApi.Controllers
 
             return NoContent();
         }
+
 
     }
 }

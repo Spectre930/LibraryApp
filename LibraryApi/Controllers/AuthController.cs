@@ -1,5 +1,4 @@
-﻿using Humanizer;
-using LibraryApp.DataAccess.AuthenticationRepository.IAuthenticationRepository;
+﻿using LibraryApp.DataAccess.AuthenticationRepository.IAuthenticationRepository;
 using LibraryApp.DataAccess.Repository.IRepository;
 using LibraryApp.Models.DTO;
 using LibraryApp.Models.Models;
@@ -82,17 +81,17 @@ public class AuthController : ControllerBase
     [Route("user/login")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Userlogin(LoginVM userLogin)
+    public async Task<string> Userlogin(LoginVM userLogin)
     {
         try
         {
             var ClientToken = await _authUnitOfWork.Clients.Login(userLogin);
 
-            return Ok(ClientToken);
+            return ClientToken;
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return ex.Message;
         }
 
 

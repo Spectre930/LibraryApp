@@ -8,14 +8,16 @@ namespace LibraryApp.Web.Repository
     public class EmployeesHttp : RepositoryHttp<Employees>, IEmployeesHttp
     {
         private readonly HttpClient _client;
-
-        public EmployeesHttp(HttpClient client) : base(client)
+        private readonly IHttpContextAccessor _contextAccessor;
+        public EmployeesHttp(HttpClient client, IHttpContextAccessor contextAccessor) : base(client, contextAccessor)
         {
             _client = client;
+            _contextAccessor = contextAccessor;
         }
 
         public async Task CreateEmployee(EmployeesDto emp)
         {
+            AuthorizeHeader();
             var response = await _client.PostAsJsonAsync("Employees/create", emp);
             if (!response.IsSuccessStatusCode)
             {
@@ -24,14 +26,15 @@ namespace LibraryApp.Web.Repository
 
         }
 
-        public async Task<string> Login(LoginVM vm)
+        public async Task<bool> Login(LoginVM vm)
         {
             var response = await _client.PostAsJsonAsync("employee/login", vm);
 
             if (response.IsSuccessStatusCode)
             {
-                var responseStream = response.Content.ReadAsStringAsync().Result;
-                return responseStream;
+                await StoreToken(response);
+                return true;
+
             }
 
             throw new Exception(response.Content.ReadAsStringAsync().Result);

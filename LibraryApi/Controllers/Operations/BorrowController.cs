@@ -52,6 +52,7 @@ public class BorrowController : ControllerBase
 
 
     [HttpPost]
+    [Route("create")]
     [ProducesResponseType(typeof(Borrow), StatusCodes.Status200OK)]
     public async Task<IActionResult> Create(BorrowDto dto)
     {
@@ -67,14 +68,14 @@ public class BorrowController : ControllerBase
 
 
     [HttpPut]
-    [Route("update/id")]
+    [Route("id/update")]
     [ProducesResponseType(typeof(Borrow), StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Update(int id, Borrow borrow)
+    public async Task<IActionResult> Update(int id)
     {
+        var borrow = await _unitOfWork.Borrows.GetFirstOrDefaultAsync(x => x.Id == id);
 
-
-        if (borrow.Id == id)
+        if (borrow != null)
         {
             _unitOfWork.Borrows.Update(borrow);
             await _unitOfWork.SaveAsync();
@@ -85,7 +86,7 @@ public class BorrowController : ControllerBase
 
 
     [HttpDelete]
-    [Route("delete/id")]
+    [Route("id/delete")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id)
@@ -101,22 +102,20 @@ public class BorrowController : ControllerBase
         return NoContent();
     }
 
-    [HttpPut]
-    [Route("return/id")]
+    [HttpPost]
+    [Route("return/{id}")]
     [ProducesResponseType(typeof(Borrow), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Return(int id, Borrow borrow)
+    public async Task<IActionResult> Return(int id)
     {
+        var borrow = await _unitOfWork.Borrows.GetFirstOrDefaultAsync(x => x.Id == id, new[] { "Book", "Client" });
 
-
-        if (borrow.Id == id)
+        if (borrow != null)
         {
-            var returned = _unitOfWork.Borrows.ReturnBook(borrow);
-            _unitOfWork.Borrows.Update(returned);
-            await _unitOfWork.SaveAsync();
-            return Ok(borrow);
+            var b = await _unitOfWork.Borrows.ReturnBook(borrow);
+            return Ok(b);
         }
-        return BadRequest();
+        return NotFound("The book you are returning wasn't borrowed");
     }
 
 }

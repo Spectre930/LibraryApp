@@ -20,6 +20,7 @@ namespace LibraryApi.Controllers
 
         [HttpGet]
         [Route("getall")]
+        [Authorize(Roles = "Admin")]
         public async Task<IEnumerable<Authors>> GetAll()
         {
             return await _unitOfWork.Authors.GetAllAsync();

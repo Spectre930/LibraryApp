@@ -25,7 +25,7 @@ namespace LibraryApi.Controllers.Operations
         public async Task<IEnumerable<Purchases>> GetAll()
         {
             var purchaseList = await _unitOfWork.Purchases
-                                                .GetAllAsync(new[] { "Book", "Client", "Employee" });
+                                                .GetAllAsync(new[] { "Book", "Client" });
 
             return purchaseList;
         }
