@@ -1,6 +1,8 @@
-﻿@model IEnumerable<Purchases>
+﻿@model IEnumerable<Authors>
 
 <partial name="_Notification" />
+
+
 
 <div class="container p-3 justirfy-content-center">
     <div class="row justirfy-content-center">
@@ -11,17 +13,17 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1 class="text-white">Purchases</h1>
+                            <h1 class="text-white">Authors</h1>
                         </div>
-                        <div class="col-sm-6">
+ @*                        <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item">
-                                    <a asp-controller="UserBooks" asp-action="Index" class="btn btn-success">
-                                        Purchase another Book
+                                    <a asp-controller="Authors" asp-action="Create" class="btn btn-success">
+                                        <i class="bi bi-plus-circle"></i> &nbsp; Create New Author
                                     </a>
                                 </li>
                             </ol>
-                        </div>
+                        </div> *@
                     </div>
                 </div><!-- /.container-fluid -->
             </section>
@@ -38,40 +40,38 @@
                                         <thead>
                                             <tr>
                                                 <th>
-                                                    Title
+                                                    First Name
                                                 </th>
                                                 <th>
-                                                    Quantity
+                                                    Last Name
                                                 </th>
                                                 <th>
-                                                    Total Price
+                                                    Email
                                                 </th>
-                                                <th>
-                                                    Purchase Date
-                                                </th>
+                                                <th></th>
                                             </tr>
                                         </thead>
-
-                                        <tbody class="table-group-divider ">
+                                        <tbody>
                                             @foreach (var obj in Model)
                                             {
-                                                <tr class="">
+                                                <tr>
                                                     <td>
-                                                        @obj.Book.Title
+                                                        @obj.F_Name
                                                     </td>
                                                     <td>
-                                                        @obj.Quantity
+                                                        @obj.L_Name
                                                     </td>
                                                     <td>
-                                                        @obj.TotalPrice.ToString("c")
+                                                        @obj.Email
                                                     </td>
+
                                                     <td>
-                                                        @obj.PurchaseDate
+
+                                                        <a asp-controller="UserAuthors" asp-action="Books" asp-route-id="@obj.Id" class="btn btn-primary ">Books</a>
                                                     </td>
                                                 </tr>
                                             }
                                         </tbody>
-
                                     </table>
                                 </div>
                                 <!-- /.card-body -->
@@ -89,4 +89,5 @@
 
     </div>
 </div>
+
 

@@ -11,7 +11,7 @@ using System.Security.Cryptography;
 
 namespace LibraryApp.DataAccess.AuthenticationRepository;
 
-public class ClientAuthentication : IClientAuthentication
+public class ClientAuthentication : AuthRepository, IClientAuthentication
 {
     private readonly IUnitOfWork _unitOfWork;
 
@@ -64,36 +64,32 @@ public class ClientAuthentication : IClientAuthentication
         return client;
     }
 
-    private bool VerifyPassword(string password, byte[] passwordHash, byte[] passwordSalt)
+    public async Task ChangePassword(PasswordVM vm)
     {
-        using (var hmac = new HMACSHA512(passwordSalt))
-        {
-            var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password)); // Create hash using password salt.
-            for (int i = 0; i < computedHash.Length; i++)
-            { // Loop through the byte array
-                if (computedHash[i] != passwordHash[i]) return false; // if mismatch
-            }
-        }
-        return true; //if no mismatches.
-    }
+        var user = await _unitOfWork.Clients.GetFirstOrDefaultAsync(x => x.Id == vm.userId);
 
-    private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-    {
-        using (var hmac = new HMACSHA512())
+        if (VerifyPassword(vm.OldPassword, user.PasswordHash, user.PasswordSalt))
         {
-            passwordSalt = hmac.Key;
-            passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            byte[] passwordHash, passwordSalt;
+            CreatePasswordHash(vm.NewPassword, out passwordHash, out passwordSalt);
+
+            user.PasswordHash = passwordHash;
+            user.PasswordSalt = passwordSalt;
+            await _unitOfWork.SaveAsync();
+        }
+        else
+        {
+            throw new Exception("Incorrect Password!");
         }
     }
-
     private string CreateToken(Clients client)
     {
         var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.NameIdentifier, client.Id.ToString()),
+    {
+        new Claim(ClaimTypes.NameIdentifier, client.Id.ToString()),
             new Claim(ClaimTypes.Email, client.Email),
-            new Claim(ClaimTypes.Role, client.Roles.Role),
-        };
+        new Claim(ClaimTypes.Role, client.Roles.Role),
+    };
 
         var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
             _configuration.GetSection("JWT:Token").Value!));
@@ -109,4 +105,5 @@ public class ClientAuthentication : IClientAuthentication
 
         return jwt;
     }
+
 }

@@ -8,7 +8,7 @@ namespace LibraryApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-//[Authorize(Roles = "Admin,Employee")]
+[Authorize]
 public class GenresController : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork;
@@ -28,7 +28,7 @@ public class GenresController : ControllerBase
         return await _unitOfWork.Genres.GetAllAsync();
     }
 
-    [HttpGet("id")]
+    [HttpGet("{id}")]
     [ProducesResponseType(typeof(Genres), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Get(int id)
@@ -45,6 +45,8 @@ public class GenresController : ControllerBase
     [HttpPost]
     [Route("create")]
     [ProducesResponseType(typeof(Genres), StatusCodes.Status200OK)]
+    [Authorize(Roles = "Admin,Employee")]
+
     public async Task<IActionResult> Create(Genres genre)
     {
         await _unitOfWork.Genres.AddAsync(genre);
@@ -56,6 +58,7 @@ public class GenresController : ControllerBase
     [Route("update/{id}")]
     [ProducesResponseType(typeof(Genres), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Authorize(Roles = "Admin,Employee")]
     public async Task<IActionResult> Update(int id, Genres genre)
     {
 
@@ -72,6 +75,7 @@ public class GenresController : ControllerBase
     [Route("delete/{id}")]
     [ProducesResponseType(typeof(Genres), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Authorize(Roles = "Admin,Employee")]
     public async Task<IActionResult> Delete(int id)
     {
         var genreToDelete = await _unitOfWork.Genres

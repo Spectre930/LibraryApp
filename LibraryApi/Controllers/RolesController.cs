@@ -8,7 +8,7 @@ namespace LibraryApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(Roles = "Admin,Employee")]
+    [Authorize(Roles = "Admin,Employee")]
     public class RolesController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -25,7 +25,7 @@ namespace LibraryApi.Controllers
             return await _unitOfWork.Roles.GetAllAsync();
         }
 
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         [ProducesResponseType(typeof(Roles), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Get(int id)
@@ -49,7 +49,7 @@ namespace LibraryApi.Controllers
         }
 
         [HttpPut]
-        [Route("{id}/update")]
+        [Route("update/{id}")]
         [ProducesResponseType(typeof(Roles), StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Update(int id, Roles role)
@@ -66,7 +66,7 @@ namespace LibraryApi.Controllers
         }
 
         [HttpDelete]
-        [Route("{id}/delete")]
+        [Route("delete/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(int id)

@@ -37,13 +37,18 @@
                     <a class="nav-link mx-2 text-uppercase" asp-area="User" asp-controller="Home" asp-action="Index">Home</a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a class="nav-link mx-2 text-uppercase" asp-area="User" asp-controller="UserBooks" asp-action="Index">View Books</a>
+                    <a class="nav-link mx-2 text-uppercase" asp-area="User" asp-controller="UserBooks" asp-action="Index">Books</a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a class="nav-link mx-2 text-uppercase" asp-area="User" asp-controller="User" asp-action="Borrows">My Borrows</a>
+                    <a class="nav-link mx-2 text-uppercase" asp-area="User" asp-controller="UserAuthors" asp-action="Index">Authors</a>
                 </li>
-                <li class="nav-item d-none d-sm-inline-block">
-                    <a class="nav-link mx-2 text-uppercase" asp-area="User" asp-controller="User" asp-action="Purchases">My Purchases</a>
+                <li class="nav-item dropdown ">
+                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">ACCOUNT</a>
+                    <div class="dropdown-menu">
+                        <a class="nav-link mx-2 text-uppercase" asp-area="User" asp-controller="User" asp-action="Info">INFO</a>
+                        <a class="nav-link mx-2 text-uppercase" asp-area="User" asp-controller="User" asp-action="Borrows">My Borrows</a>
+                        <a class="nav-link mx-2 text-uppercase" asp-area="User" asp-controller="User" asp-action="Purchases">My Purchases</a>
+                    </div>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
                     <a href="#" class="nav-link text-uppercase">Contact</a>

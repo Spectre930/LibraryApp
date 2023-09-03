@@ -10,7 +10,7 @@ namespace LibraryApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-//[Authorize(Roles = "Admin,Employee")]
+[Authorize(Roles = "Admin,Employee")]
 public class BookAuthorController : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork;

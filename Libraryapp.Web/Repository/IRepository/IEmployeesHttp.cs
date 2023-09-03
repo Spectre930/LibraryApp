@@ -8,5 +8,7 @@ namespace LibraryApp.Web.Repository.IRepository
     {
         Task CreateEmployee(EmployeesDto emp);
         Task<bool> Login(LoginVM vm);
+        Task ChangePassword(PasswordVM vm);
+        Task<Employees> UserInfo();
     }
 }

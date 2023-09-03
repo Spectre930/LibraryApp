@@ -2,24 +2,30 @@
 using LibraryApp.Models.Models;
 using LibraryApp.Models.ViewModels;
 using LibraryApp.Web.Repository.IRepository;
-using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using static System.Net.WebRequestMethods;
+
 
 namespace LibraryApp.Web.Repository;
 
 public class ClientsHttp : RepositoryHttp<Clients>, IClientsHttp
 {
     private readonly HttpClient _client;
-    private readonly IHttpContextAccessor _contextAccessor;
+    //private readonly IHttpContextAccessor _contextAccessor;
     public ClientsHttp(HttpClient client, IHttpContextAccessor contextAccessor) : base(client, contextAccessor)
     {
         _client = client;
-        _contextAccessor = contextAccessor;
+        //_contextAccessor = contextAccessor;
+    }
+
+    public async Task ChangePassword(PasswordVM vm)
+    {
+        var response = await _client.PostAsJsonAsync($"user/{vm.userId}/changepassword", vm);
+        if (response.IsSuccessStatusCode)
+        {
+            return;
+        }
+
+        throw new Exception(response.Content.ReadAsStringAsync().Result);
     }
 
     public async Task<bool> ClientLogin(LoginVM userLogin)
@@ -77,17 +83,23 @@ public class ClientsHttp : RepositoryHttp<Clients>, IClientsHttp
     public async Task UpdateClientAsync(Clients client)
     {
         AuthorizeHeader();
-        var serializerSettings = new JsonSerializerSettings();
-        serializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-        var obj = JsonConvert.SerializeObject(client, Formatting.Indented, serializerSettings);
-        var request = new HttpRequestMessage(HttpMethod.Put, "Clients/update");
-        request.Headers.Add("accept", "text/plain");
-        var content = new StringContent(obj, null, "application/json");
-        request.Content = content;
-        var response = await _client.SendAsync(request);
-        response.EnsureSuccessStatusCode();
-        var httpclient = new HttpClient();
 
+        var res = await _client.PutAsJsonAsync($"Clients/update/{client.Id}", client);
+        res.EnsureSuccessStatusCode();
+    }
+
+    public async Task<Clients> UserInfo()
+    {
+        AuthorizeHeader();
+        var id = GetClaims().Id;
+        var response = await _client.GetAsync($"Clients/{id}");
+        if (response.IsSuccessStatusCode)
+        {
+            var responseStream = response.Content.ReadAsStringAsync().Result;
+            var ResObject = JsonConvert.DeserializeObject<Clients>(responseStream);
+            return ResObject;
+        }
+        throw new Exception(response.Content.ReadAsStringAsync().Result);
 
     }
 }

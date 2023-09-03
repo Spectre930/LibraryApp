@@ -23,4 +23,5 @@ public interface IBooksHttp : IRepositoryHttp<Books>
 
     Task PurchaseBook(PurchaseVM purchaseVM);
 
+    Task<IEnumerable<BooksIndexVM>> GetBooksOfAuthor(int authorId);
 }

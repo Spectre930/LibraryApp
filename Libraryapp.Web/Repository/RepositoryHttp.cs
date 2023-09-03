@@ -12,7 +12,7 @@ public class RepositoryHttp<T> : IRepositoryHttp<T> where T : class
 {
     private readonly HttpClient _client;
     private readonly IHttpContextAccessor _contextAccessor;
-    private readonly Uri ba = new Uri("https://localhost:44395/api/");
+    private readonly Uri ba = new("https://localhost:44395/api/");
     public RepositoryHttp(HttpClient client, IHttpContextAccessor contextAccessor)
     {
         _client = client;
@@ -37,7 +37,7 @@ public class RepositoryHttp<T> : IRepositoryHttp<T> where T : class
     public async Task<T> GetAsync(string controller, int id)
     {
         AuthorizeHeader();
-        var response = await _client.GetAsync($"{controller}/id?id={id}");
+        var response = await _client.GetAsync($"{controller}/{id}");
         response.EnsureSuccessStatusCode();
         var responseStream = response.Content.ReadAsStringAsync().Result;
 

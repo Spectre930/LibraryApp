@@ -12,6 +12,10 @@ public interface IClientsHttp : IRepositoryHttp<Clients>
     Task<IEnumerable<Borrow>> GetBorrows();
     Task<IEnumerable<Purchases>> GetPurchases();
 
+    Task<Clients> UserInfo();
+
+    Task ChangePassword(PasswordVM vm);
+
 
 
 }

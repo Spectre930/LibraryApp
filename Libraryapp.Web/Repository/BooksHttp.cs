@@ -11,12 +11,10 @@ namespace LibraryApp.Web.Repository;
 public class BooksHttp : RepositoryHttp<Books>, IBooksHttp
 {
     private readonly HttpClient _client;
-    private readonly IHttpContextAccessor _contextAccessor;
-    private Uri ba = new Uri("https://localhost:44395/api/");
+    private readonly Uri ba = new("https://localhost:44395/api/");
     public BooksHttp(HttpClient client, IHttpContextAccessor contextAccessor) : base(client, contextAccessor)
     {
         _client = client;
-        _contextAccessor = contextAccessor;
         _client.BaseAddress = ba;
     }
 
@@ -45,7 +43,7 @@ public class BooksHttp : RepositoryHttp<Books>, IBooksHttp
     public async Task<IEnumerable<string>> GetAuthrosOfBook(int id)
     {
         AuthorizeHeader();
-        var response = await _client.GetAsync($"Books/getauthors/id?id={id}");
+        var response = await _client.GetAsync($"Books/getauthors/{id}");
         response.EnsureSuccessStatusCode();
         var responseStream = response.Content.ReadAsStringAsync().Result;
         var authors = JsonConvert.DeserializeObject<IEnumerable<String>>(responseStream);
@@ -55,7 +53,7 @@ public class BooksHttp : RepositoryHttp<Books>, IBooksHttp
     public async Task<BooksIndexVM> GetBook(int id)
     {
         AuthorizeHeader();
-        var response = await _client.GetAsync($"Books/id?id={id}");
+        var response = await _client.GetAsync($"Books/{id}");
         response.EnsureSuccessStatusCode();
         var responseStream = response.Content.ReadAsStringAsync().Result;
         var books = JsonConvert.DeserializeObject<Books>(responseStream);
@@ -102,7 +100,7 @@ public class BooksHttp : RepositoryHttp<Books>, IBooksHttp
 
     public async Task<BooksEditVM> GetEditBook(int id, IEnumerable<Genres> genres)
     {
-        var response = await _client.GetAsync($"Books/id?id={id}");
+        var response = await _client.GetAsync($"Books/{id}");
         response.EnsureSuccessStatusCode();
         var responseStream = response.Content.ReadAsStringAsync().Result;
         var books = JsonConvert.DeserializeObject<Books>(responseStream);
@@ -178,6 +176,32 @@ public class BooksHttp : RepositoryHttp<Books>, IBooksHttp
         {
             throw new Exception(response.Content.ReadAsStringAsync().Result);
         }
+
+    }
+
+    public async Task<IEnumerable<BooksIndexVM>> GetBooksOfAuthor(int authorId)
+    {
+        AuthorizeHeader();
+        var response = await _client.GetAsync($"Authors/{authorId}/books");
+        if (response.IsSuccessStatusCode)
+        {
+            var responseStream = response.Content.ReadAsStringAsync().Result;
+            var books = JsonConvert.DeserializeObject<IEnumerable<Books>>(responseStream);
+
+            var res = new List<BooksIndexVM>();
+
+            foreach (var item in books)
+            {
+                res.Add(new BooksIndexVM
+                {
+                    book = item,
+                    authors = await GetAuthrosOfBook(item.Id)
+                });
+            }
+
+            return res;
+        }
+        throw new Exception("Authors has no books");
 
     }
 }

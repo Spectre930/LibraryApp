@@ -9,7 +9,7 @@ namespace LibraryApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(Roles = "Admin,Employee")]
+    [Authorize]
     public class BooksController : ControllerBase
     {
 
@@ -30,7 +30,7 @@ namespace LibraryApi.Controllers
 
         }
 
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         [ProducesResponseType(typeof(Books), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Get(int id)
@@ -46,6 +46,7 @@ namespace LibraryApi.Controllers
         [HttpPost]
         [Route("create")]
         [ProducesResponseType(typeof(Books), StatusCodes.Status200OK)]
+        [Authorize(Roles = "Admin,Employee")]
         public async Task<IActionResult> Create(BooksDTO dto)
         {
             if (dto.AuthorIds == null)
@@ -71,9 +72,10 @@ namespace LibraryApi.Controllers
         }
 
         [HttpPut]
-        [Route("update")]
+        [Route("update/{id}")]
         [ProducesResponseType(typeof(Books), StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize(Roles = "Admin,Employee")]
         public async Task<IActionResult> Update(Books book)
         {
 
@@ -90,6 +92,7 @@ namespace LibraryApi.Controllers
         [Route("delete/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize(Roles = "Admin,Employee")]
         public async Task<IActionResult> Delete(int id)
         {
             var bookToDelete = await _unitOfWork.Books.GetFirstOrDefaultAsync(x => x.Id == id);
@@ -103,7 +106,7 @@ namespace LibraryApi.Controllers
             return NoContent();
         }
 
-        [HttpGet("getauthors/id")]
+        [HttpGet("getauthors/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetAuthors(int id)

@@ -14,9 +14,18 @@ public class UserController : Controller
     {
         _unitOfWorkHttp = unitOfWorkHttp;
     }
-    public IActionResult Index()
+    public async Task<IActionResult> Info()
     {
-        return View();
+        try
+        {
+            var info = await _unitOfWorkHttp.Clients.UserInfo();
+            return View(info);
+        }
+        catch (Exception ex)
+        {
+            ViewBag.ErrorMessage = ex.Message;
+            return View("Index", "Home");
+        }
     }
 
 
@@ -56,7 +65,7 @@ public class UserController : Controller
         try
         {
             await _unitOfWorkHttp.Clients.ClientLogin(userLogin);
-            TempData["success"] = "Logged in Seccessfully!";
+            TempData["success"] = "Logged in Successfully!";
             return RedirectToAction("Index", "Home");
         }
         catch (Exception ex)
@@ -96,6 +105,35 @@ public class UserController : Controller
         var ResObject = await _unitOfWorkHttp.Clients.GetPurchases();
 
         return View(ResObject);
+
+    }
+
+    [HttpGet]
+    public IActionResult ChangePassword()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ChangePassword(PasswordVM vm)
+    {
+        vm.userId = _unitOfWorkHttp.Clients.GetClaims().Id;
+        if (vm.NewPassword.Equals(vm.OldPassword))
+        {
+            ViewBag.Message = "the two passwords are the same!";
+            return View();
+        }
+        try
+        {
+            await _unitOfWorkHttp.Clients.ChangePassword(vm);
+            TempData["success"] = "Password Changed Successfully!";
+            return RedirectToAction("Info", "User");
+        }
+        catch (Exception ex)
+        {
+            ViewBag.Message = ex.Message;
+            return View();
+        }
 
     }
 

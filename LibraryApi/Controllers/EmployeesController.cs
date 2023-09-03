@@ -10,7 +10,7 @@ namespace LibraryApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-//[Authorize(Roles = "Admin")]
+
 public class EmployeesController : ControllerBase
 {
     private readonly IUnitOfWork _unitOfWork;
@@ -24,6 +24,7 @@ public class EmployeesController : ControllerBase
 
     [HttpGet]
     [Route("getall")]
+    [Authorize(Roles = "Admin")]
     public async Task<IEnumerable<Employees>> GetAll()
     {
 
@@ -33,7 +34,8 @@ public class EmployeesController : ControllerBase
     }
 
     [HttpGet]
-    [Route("id")]
+    [Route("{id}")]
+    [Authorize(Roles = "Admin,Employee")]
     [ProducesResponseType(typeof(Employees), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Get(int id)
@@ -41,7 +43,7 @@ public class EmployeesController : ControllerBase
         var emp = await _unitOfWork.Employees
                                    .GetFirstOrDefaultAsync(x => x.Id == id, new[] { "Role" });
         if (emp == null)
-            return NotFound();
+            return NotFound("Employee Not Found");
 
         return Ok(emp);
     }
@@ -49,6 +51,7 @@ public class EmployeesController : ControllerBase
     [HttpPost]
     [Route("create")]
     [ProducesResponseType(typeof(Employees), StatusCodes.Status200OK)]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create(EmployeesDto emp)
     {
         try
@@ -69,6 +72,7 @@ public class EmployeesController : ControllerBase
     [Route("update/{id}")]
     [ProducesResponseType(typeof(Employees), StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Update(Employees employee)
     {
         if (await _unitOfWork.Employees.GetFirstOrDefaultAsync(i => i.Id == employee.Id) == null)
@@ -84,6 +88,7 @@ public class EmployeesController : ControllerBase
     [Route("delete/{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Delete(int id)
     {
         var EmployeeToDelete = await _unitOfWork.Employees

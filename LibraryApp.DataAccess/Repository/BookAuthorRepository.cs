@@ -48,5 +48,16 @@ public class BookAuthorRepository : Repository<AuthorBook>, IBookAuthorRepositor
 
 
     }
+
+    public IEnumerable<Books> GetBooksOfAuthor(int authorId)
+    {
+        var books = _db.AuthorBooks
+            .Include(b => b.Book)
+            .Include(b => b.Book.Genre)
+            .Where(b => b.AuthorId == authorId)
+            .Select(b => b.Book)
+            .ToList();
+        return books;
+    }
 }
 

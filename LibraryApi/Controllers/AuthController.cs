@@ -3,6 +3,7 @@ using LibraryApp.DataAccess.Repository.IRepository;
 using LibraryApp.Models.DTO;
 using LibraryApp.Models.Models;
 using LibraryApp.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryApi.Controllers;
@@ -11,13 +12,13 @@ namespace LibraryApi.Controllers;
 [ApiController]
 public class AuthController : ControllerBase
 {
-    private readonly IUnitOfWork _unitOfWork;
+
     private readonly IAuthUnitOfWork _authUnitOfWork;
 
-    public AuthController(IUnitOfWork unitOfWork, IAuthUnitOfWork authUnitOfWork)
+    public AuthController(IAuthUnitOfWork authUnitOfWork)
     {
         _authUnitOfWork = authUnitOfWork;
-        _unitOfWork = unitOfWork;
+
     }
 
     [HttpPost]
@@ -42,6 +43,7 @@ public class AuthController : ControllerBase
     [Route("employee/login")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [AllowAnonymous]
     public async Task<IActionResult> EmployeeLogin(LoginVM empLogin)
     {
         try
@@ -61,6 +63,8 @@ public class AuthController : ControllerBase
     [HttpPost]
     [Route("user/register")]
     [ProducesResponseType(typeof(Clients), StatusCodes.Status200OK)]
+    [AllowAnonymous]
+
     public async Task<IActionResult> UserRegister(ClientsDto dto)
     {
         try
@@ -81,6 +85,8 @@ public class AuthController : ControllerBase
     [Route("user/login")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [AllowAnonymous]
+
     public async Task<string> Userlogin(LoginVM userLogin)
     {
         try
@@ -95,5 +101,37 @@ public class AuthController : ControllerBase
         }
 
 
+    }
+
+    [HttpPost]
+    [Route("user/{id}/changepassword")]
+    [Authorize(Roles = "User")]
+    public async Task<IActionResult> UserChangePassword(PasswordVM vm)
+    {
+        try
+        {
+            await _authUnitOfWork.Clients.ChangePassword(vm);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPost]
+    [Route("employee/{id}/changepassword")]
+    [Authorize(Roles = "Admin,Employee")]
+    public async Task<IActionResult> EmpChangePassword(PasswordVM vm)
+    {
+        try
+        {
+            await _authUnitOfWork.Employee.ChangePassword(vm);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 }

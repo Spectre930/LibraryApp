@@ -70,7 +70,7 @@ public class ClientsController : Controller
         catch (Exception ex)
         {
 
-            ViewBag.Message = "error occured while editing please try again!";
+            ViewBag.Message = $"error occured while editing please try again!,{ex.Message}";
             return View();
         }
 

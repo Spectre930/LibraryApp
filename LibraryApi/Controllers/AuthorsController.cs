@@ -8,7 +8,7 @@ namespace LibraryApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(Roles = "Admin,Employee")]
+    [Authorize(Roles = "Admin,Employee,User")]
     public class AuthorsController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -20,15 +20,16 @@ namespace LibraryApi.Controllers
 
         [HttpGet]
         [Route("getall")]
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         public async Task<IEnumerable<Authors>> GetAll()
         {
             return await _unitOfWork.Authors.GetAllAsync();
         }
 
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         [ProducesResponseType(typeof(Authors), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize]
         public async Task<IActionResult> Get(int id)
         {
             var author = await _unitOfWork.Authors.GetFirstOrDefaultAsync(x => x.Id == id);
@@ -41,6 +42,7 @@ namespace LibraryApi.Controllers
         [HttpPost]
         [Route("create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [Authorize(Roles = "Admin,Employee")]
         public async Task<IActionResult> Create(Authors author)
         {
             author.Age = _unitOfWork.Authors.SetAge(author.DOB);
@@ -54,6 +56,7 @@ namespace LibraryApi.Controllers
         [Route("update/{id}")]
         [ProducesResponseType(typeof(Authors), StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize(Roles = "Admin,Employee")]
         public async Task<IActionResult> Update(int id, Authors author)
         {
 
@@ -72,6 +75,7 @@ namespace LibraryApi.Controllers
         [Route("delete/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize(Roles = "Admin,Employee")]
         public async Task<IActionResult> Delete(int id)
         {
             var authorToDelete = await _unitOfWork.Authors.GetFirstOrDefaultAsync(x => x.Id == id);
@@ -85,5 +89,19 @@ namespace LibraryApi.Controllers
             return NoContent();
         }
 
+        [HttpGet]
+        [Route("{id}/books")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize]
+
+        public IEnumerable<Books> GetBooks(int id)
+        {
+            var books = _unitOfWork.AuthorBook.GetBooksOfAuthor(id);
+            if (books != null)
+            {
+                return books;
+            }
+            throw new Exception("No books for this author");
+        }
     }
 }
