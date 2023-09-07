@@ -43,8 +43,8 @@ public class ClientsHttp : RepositoryHttp<Clients>, IClientsHttp
 
     public async Task CreateClient(ClientsDto client)
     {
-        AuthorizeHeader();
-        var response = await _client.PostAsJsonAsync("Clients/create", client);
+
+        var response = await _client.PostAsJsonAsync("user/register", client);
 
         if (!response.IsSuccessStatusCode)
         {

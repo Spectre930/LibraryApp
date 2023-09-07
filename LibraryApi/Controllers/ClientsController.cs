@@ -69,6 +69,7 @@ public class ClientsController : ControllerBase
     [HttpPost]
     [Route("create")]
     [ProducesResponseType(typeof(Clients), StatusCodes.Status200OK)]
+    [AllowAnonymous]
     public async Task<IActionResult> Create(ClientsDto dto)
     {
 
