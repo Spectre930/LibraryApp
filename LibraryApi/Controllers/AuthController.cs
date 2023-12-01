@@ -87,17 +87,17 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [AllowAnonymous]
 
-    public async Task<string> Userlogin(LoginVM userLogin)
+    public async Task<IActionResult> Userlogin(LoginVM userLogin)
     {
         try
         {
             var ClientToken = await _authUnitOfWork.Clients.Login(userLogin);
 
-            return ClientToken;
+            return Ok(ClientToken);
         }
         catch (Exception ex)
         {
-            return ex.Message;
+            return BadRequest(ex.Message);
         }
 
 

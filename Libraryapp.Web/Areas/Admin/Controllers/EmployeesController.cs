@@ -124,7 +124,7 @@ public class EmployeesController : Controller
         }
         catch (Exception ex)
         {
-            if (ex is HttpRequestException)
+            //if (ex is HttpRequestException)
                 ViewBag.Message = ex.Message;
             return View();
         }
